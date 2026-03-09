@@ -8,715 +8,939 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
   <style>
     /* ═══════════════════════════════════════
     BASE / RESET
     ═══════════════════════════════════════ */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --green: #2E7D32;
-      --green2: #4CAF50;
-      --yellow: #FFD200;
-      --dark: #050d05;
-      --dark2: #0a1a0a;
-      --card: #0f1f0f;
-      --text: #f0f0f0;
-      --textsub: rgba(240,240,240,0.6);
-      --border: rgba(255,255,255,0.07);
-    }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--dark);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      overflow-x: hidden;
-      cursor: none;
-    }
-    a { color: inherit; text-decoration: none; }
-    img { display: block; max-width: 100%; }
-
-    /* ── Custom cursor ── */
-    #cur, #cur2 {
-      position: fixed; border-radius: 50%; pointer-events: none;
-      transform: translate(-50%,-50%); z-index: 99999; transition: transform .15s;
-    }
-    #cur { width:10px;height:10px;background:var(--yellow); }
-    #cur2 { width:32px;height:32px;border:1.5px solid rgba(255,210,0,.5);transition:left .1s,top .1s; }
-
-    /* ── Container ── */
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 5vw; }
-
-    /* ═══════════════════════════════════════
-    NAVIGATION
-    ═══════════════════════════════════════ */
-    #navbar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1rem 5vw;
-      background: rgba(5,13,5,0.85);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      transition: padding .3s;
-    }
-    .nav-logo { display:flex;align-items:center;gap:.75rem;cursor:pointer; }
-    .logo-circle {
-      width:42px;height:42px;border-radius:50%;
-      background:linear-gradient(135deg,var(--green),var(--green2));
-      display:flex;align-items:center;justify-content:center;
-      font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:900;color:#fff;
-    }
-    .logo-name { font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;line-height:1; }
-    .logo-name em { color:var(--yellow);font-style:italic; }
-    .logo-sub { font-size:.65rem;color:var(--textsub);letter-spacing:.08em;text-transform:uppercase; }
-    .nav-links { display:flex;align-items:center;gap:2rem; }
-    .nav-link {
-      font-size:.85rem;font-weight:500;color:var(--textsub);
-      cursor:pointer;letter-spacing:.04em;transition:color .2s;position:relative;
-    }
-    .nav-link::after {
-      content:'';position:absolute;bottom:-4px;left:0;right:0;height:1.5px;
-      background:var(--yellow);transform:scaleX(0);transition:transform .25s;
-    }
-    .nav-link:hover, .nav-link.active-link { color:#fff; }
-    .nav-link.active-link::after, .nav-link:hover::after { transform:scaleX(1); }
-    .nav-cta {
-      background:linear-gradient(135deg,var(--yellow),#FFA000);
-      color:#000;font-size:.82rem;font-weight:700;
-      padding:.5rem 1.2rem;border-radius:50px;letter-spacing:.04em;
-      transition:transform .2s,box-shadow .2s;
-    }
-    .nav-cta:hover { transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,210,0,.3); }
-    .hamburger {
-      display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:.3rem;
-    }
-    .hamburger span {
-      width:24px;height:2px;background:#fff;border-radius:2px;transition:all .3s;display:block;
-    }
-    .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
-    .hamburger.open span:nth-child(2) { opacity:0; }
-    .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
-    .mobile-menu {
-      display:none;position:fixed;inset:0;top:70px;z-index:999;
-      background:rgba(5,13,5,.97);backdrop-filter:blur(20px);
-      flex-direction:column;align-items:center;justify-content:center;gap:2rem;
-    }
-    .mobile-menu.open { display:flex; }
-    .mobile-menu .nav-link { font-size:1.4rem; }
-    .mobile-menu .nav-cta { font-size:1rem;padding:.7rem 2rem; }
-
-    /* ═══════════════════════════════════════
-    PAGES
-    ═══════════════════════════════════════ */
-    .page { display:none; }
-    .page.active { display:block; }
-    .page-hero {
-      padding: 8rem 0 4rem;
-      background: radial-gradient(ellipse at 50% 0%, rgba(46,125,32,.18) 0%, transparent 70%);
-      text-align:center;
-      border-bottom:1px solid var(--border);
-    }
-    .page-hero-label { display:flex;align-items:center;justify-content:center;gap:.75rem;margin-bottom:1rem; }
-
-    /* ═══════════════════════════════════════
-    SECTION LABELS / HEADINGS
-    ═══════════════════════════════════════ */
-    .sec-label { display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem; }
-    .sl { flex:0 0 32px;height:1.5px;background:linear-gradient(90deg,var(--yellow),transparent); }
-    .sl-t { font-size:.7rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--yellow); }
-    .sec-h { font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;line-height:1.1; }
-    .sec-h em { color:var(--yellow);font-style:italic; }
-
-    /* ═══════════════════════════════════════
-    SCROLL REVEAL
-    ═══════════════════════════════════════ */
-    .rev,.rev-l,.rev-r {
-      opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease;
-    }
-    .rev-l { transform:translateX(-30px); }
-    .rev-r { transform:translateX(30px); }
-    .rev.on,.rev-l.on,.rev-r.on { opacity:1;transform:none; }
-
-    /* ═══════════════════════════════════════
-    BUTTONS
-    ═══════════════════════════════════════ */
-    .btn-y {
-      background:linear-gradient(135deg,var(--yellow),#FFA000);color:#000;
-      font-weight:700;font-size:.9rem;letter-spacing:.04em;
-      padding:.85rem 2rem;border-radius:50px;border:none;cursor:pointer;
-      transition:transform .2s,box-shadow .2s;
-    }
-    .btn-y:hover { transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,210,0,.3); }
-    .btn-outline {
-      background:transparent;color:#fff;
-      border:1.5px solid rgba(255,255,255,.25);
-      font-weight:600;font-size:.9rem;letter-spacing:.04em;
-      padding:.85rem 2rem;border-radius:50px;cursor:pointer;
-      transition:border-color .2s,background .2s;
-    }
-    .btn-outline:hover { border-color:var(--yellow);background:rgba(255,210,0,.05); }
-
-    /* ═══════════════════════════════════════
-    WHATSAPP FLOAT
-    ═══════════════════════════════════════ */
-    .wa-btn {
-      position:fixed;bottom:2rem;right:2rem;z-index:900;
-      width:56px;height:56px;border-radius:50%;
-      background:#25D366;display:flex;align-items:center;justify-content:center;
-      box-shadow:0 4px 20px rgba(37,211,102,.4);
-      transition:transform .2s,box-shadow .2s;
-    }
-    .wa-btn:hover { transform:scale(1.1);box-shadow:0 8px 30px rgba(37,211,102,.5); }
-    .wa-btn svg { width:28px;height:28px;fill:#fff; }
-
-    /* ═══════════════════════════════════════
-    HERO
-    ═══════════════════════════════════════ */
-    .hero {
-      position:relative;min-height:100svh;display:flex;align-items:center;
-      overflow:hidden;padding-top:80px;
-    }
-    .hero-bg {
-      position:absolute;inset:-20%;
-      background:url('https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg?auto=compress&cs=tinysrgb&w=1600') center/cover no-repeat;
-      transform:scale(1.15);will-change:transform;
-    }
-    .hero-overlay {
-      position:absolute;inset:0;
-      background:linear-gradient(135deg,rgba(5,13,5,.97) 0%,rgba(5,13,5,.8) 50%,rgba(5,13,5,.6) 100%);
-    }
-    .hero-glow {
-      position:absolute;top:20%;left:10%;width:500px;height:500px;border-radius:50%;
-      background:radial-gradient(ellipse,rgba(46,125,32,.2) 0%,transparent 70%);
-      pointer-events:none;
-    }
-    .hero-inner {
-      position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;
-      padding-top:2rem;padding-bottom:4rem;
-    }
-    .eyebrow { display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem; }
-    .ey-line { width:40px;height:1.5px;background:var(--yellow); }
-    .ey-txt { font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--yellow); }
-    h1 { font-family:'Playfair Display',serif;line-height:1; }
-    .h1a { display:block;font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:700;color:var(--textsub); }
-    .h1b { display:block;font-size:clamp(3rem,6vw,5.5rem);font-weight:900;line-height:.95; }
-    .h1c { display:block;font-size:clamp(3rem,6vw,5.5rem);font-weight:900;color:var(--yellow);font-style:italic;line-height:.95; }
-    .hero-sub {
-      font-family:'Cormorant Garamond',serif;font-size:1.2rem;
-      color:var(--textsub);line-height:1.7;margin:1.5rem 0 2rem;max-width:480px;
-    }
-    .hero-btns { display:flex;gap:1rem;flex-wrap:wrap; }
-    .hero-stats {
-      display:flex;gap:2rem;flex-wrap:wrap;margin-top:3rem;
-      padding-top:2rem;border-top:1px solid var(--border);
-    }
-    .hstat-num { font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;color:var(--yellow); }
-    .hstat-lbl { font-size:.72rem;color:var(--textsub);letter-spacing:.06em;margin-top:.1rem; }
-    .hero-img-side { position:relative;display:flex;align-items:center;justify-content:center; }
-    .hero-food-img {
-      width:100%;max-width:500px;border-radius:24px;
-      box-shadow:0 30px 80px rgba(0,0,0,.6);
-      border:1px solid rgba(255,255,255,.08);
-      object-fit:cover;aspect-ratio:4/3;
-    }
-    .hero-img-badge {
-      position:absolute;top:-20px;right:-20px;
-      width:110px;height:110px;border-radius:50%;
-      background:linear-gradient(135deg,var(--yellow),#FFA000);
-      display:flex;align-items:center;justify-content:center;
-      animation:spin 20s linear infinite;
-    }
-    .hero-img-badge-inner { text-align:center; }
-    .badge-top { font-size:.55rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#000; }
-    .badge-num { font-size:1.8rem; }
-    .badge-bot { font-size:.55rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#000; }
-    .hero-img-float {
-      position:absolute;bottom:-30px;left:-30px;
-      width:140px;height:140px;border-radius:16px;object-fit:cover;
-      border:3px solid var(--dark);
-      box-shadow:0 15px 40px rgba(0,0,0,.5);
-    }
-    .hero-scroll-hint {
-      position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
-      display:flex;flex-direction:column;align-items:center;gap:.5rem;
-      font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--textsub);
-    }
-    .scroll-arrow {
-      width:20px;height:20px;border-right:2px solid var(--textsub);border-bottom:2px solid var(--textsub);
-      transform:rotate(45deg);animation:bounce 1.5s infinite;
-    }
-
-    /* particles */
-    .particles { position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1; }
-    .p { position:absolute;border-radius:50%;animation:rise linear infinite;opacity:.6; }
-    @keyframes rise { 0%{transform:translateY(0) scale(1);opacity:.6} 100%{transform:translateY(-110vh) scale(0);opacity:0} }
-    @keyframes bounce { 0%,100%{transform:rotate(45deg) translateY(0)} 50%{transform:rotate(45deg) translateY(5px)} }
-    @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
-
-    /* ═══════════════════════════════════════
-    TICKER
-    ═══════════════════════════════════════ */
-    .ticker {
-      overflow:hidden;background:var(--yellow);padding:.6rem 0;
-      border-top:1px solid rgba(0,0,0,.1);border-bottom:1px solid rgba(0,0,0,.1);
-    }
-    .ticker-inner { display:flex;width:max-content;animation:ticker 30s linear infinite; }
-    .ticker-item {
-      white-space:nowrap;padding:0 2rem;
-      font-size:.78rem;font-weight:700;letter-spacing:.08em;color:#000;text-transform:uppercase;
-    }
-    .ticker-item span { margin:0 .5rem;opacity:.5; }
-    @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-
-    /* ═══════════════════════════════════════
-    ABOUT STRIP (Home)
-    ═══════════════════════════════════════ */
-    .about-strip { padding:7rem 0; }
-    .about-grid { display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center; }
-    .about-visual { position:relative;display:flex;align-items:center;justify-content:center; }
-    .spin-logo {
-      position:absolute;top:-30px;right:-10px;z-index:3;
-      width:90px;height:90px;border-radius:50%;
-      background:linear-gradient(135deg,var(--green),var(--green2));
-      display:flex;align-items:center;justify-content:center;
-      animation:spin 15s linear infinite;
-      box-shadow:0 10px 30px rgba(46,125,32,.4);
-    }
-    .spin-logo-inner { text-align:center; }
-    .spin-logo-inner span { font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:#fff; }
-    .spin-logo-inner small { display:block;font-size:.45rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.7); }
-    .about-main-img {
-      width:100%;border-radius:20px;object-fit:cover;aspect-ratio:4/5;
-      box-shadow:0 30px 80px rgba(0,0,0,.5);border:1px solid var(--border);
-    }
-    .about-float-img {
-      position:absolute;bottom:-25px;right:-25px;
-      width:150px;height:150px;border-radius:14px;object-fit:cover;
-      border:3px solid var(--dark);box-shadow:0 15px 40px rgba(0,0,0,.5);
-    }
-    .about-text { padding:2rem 0; }
-    .pillars { display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem; }
-    .pillar {
-      background:rgba(255,255,255,.03);border:1px solid var(--border);
-      border-radius:14px;padding:1.2rem;transition:border-color .3s,background .3s;
-    }
-    .pillar:hover { border-color:rgba(255,210,0,.2);background:rgba(255,210,0,.03); }
-    .pillar-i { font-size:1.6rem;margin-bottom:.4rem; }
-    .pillar-t { font-weight:700;font-size:.9rem;margin-bottom:.2rem; }
-    .pillar-d { font-size:.78rem;color:var(--textsub); }
+    
 
     /* ═══════════════════════════════════════
     MENU SECTION
     ═══════════════════════════════════════ */
-    .menu-sec { padding:7rem 0;background:radial-gradient(ellipse at 50% 50%,rgba(46,125,32,.06) 0%,transparent 70%); }
-    .menu-hdr { text-align:center;margin-bottom:2.5rem; }
-    .menu-hdr p { color:var(--textsub);font-family:'Cormorant Garamond',serif;font-size:1.1rem;margin-top:.5rem; }
+    .menu-sec {
+      padding: 7rem 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(46, 125, 32, .06) 0%, transparent 70%);
+    }
+
+    .menu-hdr {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .menu-hdr p {
+      color: var(--textsub);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      margin-top: .5rem;
+    }
 
     /* ── Category Tabs ── */
     .menu-tabs {
-      display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;
-      margin-bottom:2rem;
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 2rem;
     }
+
     .mtab {
-      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
-      color:rgba(255,255,255,.6);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:600;
-      padding:.55rem 1.1rem;border-radius:50px;cursor:pointer;
-      transition:all .2s;letter-spacing:.03em;white-space:nowrap;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      color: rgba(255, 255, 255, .6);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .8rem;
+      font-weight: 600;
+      padding: .55rem 1.1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all .2s;
+      letter-spacing: .03em;
+      white-space: nowrap;
     }
-    .mtab:hover { color:#fff;border-color:rgba(255,210,0,.3);background:rgba(255,210,0,.05); }
+
+    .mtab:hover {
+      color: #fff;
+      border-color: rgba(255, 210, 0, .3);
+      background: rgba(255, 210, 0, .05);
+    }
+
     .mtab.active {
-      background:linear-gradient(135deg,var(--yellow),#FFA000);
-      color:#000;border-color:transparent;font-weight:700;
+      background: linear-gradient(135deg, var(--yellow), #FFA000);
+      color: #000;
+      border-color: transparent;
+      font-weight: 700;
     }
 
     /* ── Menu Panels ── */
-    .menu-panels { max-width:780px;margin:0 auto; }
-    .mpanel { display:none; }
-    .mpanel.active { display:block;animation:fadeUp .35s ease; }
-    @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+    .menu-panels {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .mpanel {
+      display: none;
+    }
+
+    .mpanel.active {
+      display: block;
+      animation: fadeUp .35s ease;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
 
     .mlist-sub-header {
-      font-size:.68rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
-      color:var(--yellow);margin-bottom:.75rem;padding-left:.25rem;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: .75rem;
+      padding-left: .25rem;
     }
 
     /* ── Menu Item Row ── */
     .mitem {
-      display:flex;align-items:center;justify-content:space-between;
-      background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
-      border-radius:14px;padding:1rem 1.25rem;margin-bottom:.65rem;
-      cursor:pointer;transition:all .22s;gap:1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 14px;
+      padding: 1rem 1.25rem;
+      margin-bottom: .65rem;
+      cursor: pointer;
+      transition: all .22s;
+      gap: 1rem;
     }
-    .mitem:hover { background:rgba(255,255,255,.06);border-color:rgba(255,210,0,.2);transform:translateX(4px); }
+
+    .mitem:hover {
+      background: rgba(255, 255, 255, .06);
+      border-color: rgba(255, 210, 0, .2);
+      transform: translateX(4px);
+    }
+
     .mitem.featured {
-      background:rgba(255,210,0,.05);border-color:rgba(255,210,0,.18);
+      background: rgba(255, 210, 0, .05);
+      border-color: rgba(255, 210, 0, .18);
     }
-    .mitem.featured:hover { background:rgba(255,210,0,.09); }
-    .mitem-l { flex:1;min-width:0; }
+
+    .mitem.featured:hover {
+      background: rgba(255, 210, 0, .09);
+    }
+
+    .mitem-l {
+      flex: 1;
+      min-width: 0;
+    }
+
     .mitem-name {
-      font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;
-      color:var(--yellow);letter-spacing:.02em;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--yellow);
+      letter-spacing: .02em;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      flex-wrap: wrap;
     }
+
     .mitem-star {
-      font-family:'DM Sans',sans-serif;font-size:.62rem;font-weight:700;
-      letter-spacing:.08em;text-transform:uppercase;
-      color:#0a1a0a;background:var(--yellow);
-      padding:.15rem .5rem;border-radius:50px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #0a1a0a;
+      background: var(--yellow);
+      padding: .15rem .5rem;
+      border-radius: 50px;
     }
+
     .mitem-sub {
-      font-family:'Cormorant Garamond',serif;font-size:.88rem;
-      color:rgba(255,255,255,.45);margin-top:.15rem;font-style:italic;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: .88rem;
+      color: rgba(255, 255, 255, .45);
+      margin-top: .15rem;
+      font-style: italic;
     }
-    .mitem-r { display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0; }
+
+    .mitem-r {
+      display: flex;
+      gap: .4rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      flex-shrink: 0;
+    }
+
     .mitem-badge {
-      font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:700;
-      padding:.3rem .75rem;border-radius:8px;white-space:nowrap;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .8rem;
+      font-weight: 700;
+      padding: .3rem .75rem;
+      border-radius: 8px;
+      white-space: nowrap;
     }
-    .mitem-badge.nonveg { background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.25);color:#FF8A65; }
-    .mitem-badge.veg    { background:rgba(76,175,80,.1);border:1px solid rgba(76,175,80,.25);color:#81C784; }
-    .mitem-badge.single { background:rgba(255,210,0,.1);border:1px solid rgba(255,210,0,.25);color:var(--yellow); }
-    .mitem-badge.veg-na { background:transparent;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.2);font-weight:400; }
+
+    .mitem-badge.nonveg {
+      background: rgba(255, 107, 53, .12);
+      border: 1px solid rgba(255, 107, 53, .25);
+      color: #FF8A65;
+    }
+
+    .mitem-badge.veg {
+      background: rgba(76, 175, 80, .1);
+      border: 1px solid rgba(76, 175, 80, .25);
+      color: #81C784;
+    }
+
+    .mitem-badge.single {
+      background: rgba(255, 210, 0, .1);
+      border: 1px solid rgba(255, 210, 0, .25);
+      color: var(--yellow);
+    }
+
+    .mitem-badge.veg-na {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, .08);
+      color: rgba(255, 255, 255, .2);
+      font-weight: 400;
+    }
 
     /* Column header row above momos */
     .mitem-price-header {
-      display:flex;align-items:center;justify-content:space-between;
-      padding:0 1.25rem .4rem;margin-bottom:.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.25rem .4rem;
+      margin-bottom: .1rem;
     }
-    .mitem-ph-spacer { flex:1; }
+
+    .mitem-ph-spacer {
+      flex: 1;
+    }
+
     .mitem-ph-labels {
-      display:flex;gap:.4rem;flex-shrink:0;
+      display: flex;
+      gap: .4rem;
+      flex-shrink: 0;
     }
+
     .mitem-ph-chicken {
-      width:78px;text-align:center;
-      font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-      color:#FF8A65;
+      width: 78px;
+      text-align: center;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #FF8A65;
     }
+
     .mitem-ph-veg {
-      width:78px;text-align:center;
-      font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-      color:#81C784;
+      width: 78px;
+      text-align: center;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #81C784;
     }
 
     /* Force both price badges to same fixed width so columns align */
-    .mitem-r-duo { gap:.4rem;flex-wrap:nowrap; }
+    .mitem-r-duo {
+      gap: .4rem;
+      flex-wrap: nowrap;
+    }
+
     .mitem-r-duo .mitem-badge {
-      width:78px;text-align:center;justify-content:center;
-      display:inline-flex;
+      width: 78px;
+      text-align: center;
+      justify-content: center;
+      display: inline-flex;
     }
 
     /* ── keep old .mi styles for potential reuse ── */
-    .menu-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem; }
-    .mi { position:relative;border-radius:20px;overflow:hidden;aspect-ratio:4/3;cursor:pointer;border:1px solid var(--border);transition:transform .3s,box-shadow .3s; }
-    .mi:hover { transform:translateY(-6px);box-shadow:0 30px 60px rgba(0,0,0,.5); }
-    .mi img { width:100%;height:100%;object-fit:cover;transition:transform .5s; }
-    .mi:hover img { transform:scale(1.07); }
-    .mi.wide { grid-column:span 2; }
-    .mi-overlay { position:absolute;inset:0;background:linear-gradient(to top,rgba(5,13,5,.95) 0%,rgba(5,13,5,.4) 50%,transparent 100%);transition:opacity .3s; }
-    .mi:hover .mi-overlay { opacity:.85; }
-    .mi-cnt { position:absolute;bottom:0;left:0;right:0;padding:1.5rem; }
-    .mi-tag { display:inline-block;margin-bottom:.5rem;background:rgba(255,210,0,.15);border:1px solid rgba(255,210,0,.3);color:var(--yellow);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .7rem;border-radius:50px; }
-    .mi-name { font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;margin-bottom:.3rem; }
-    .mi-desc { font-size:.8rem;color:rgba(255,255,255,.65);line-height:1.5;margin-bottom:.5rem; }
-    .mi-price { font-weight:700;color:var(--green2);font-size:.95rem; }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
 
-    /* ═══════════════════════════════════════
-    PARALLAX QUOTE
-    ═══════════════════════════════════════ */
-    .pq { position:relative;min-height:400px;display:flex;align-items:center;overflow:hidden; }
-    .pq-bg {
-      position:absolute;inset:-20%;
-      background:url('https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&w=1600') center/cover no-repeat;
-      will-change:transform;
+    .mi {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      transition: transform .3s, box-shadow .3s;
     }
-    .pq-overlay {
-      position:absolute;inset:0;
-      background:rgba(5,13,5,.88);
-      display:flex;align-items:center;justify-content:center;padding:4rem 5vw;
-    }
-    .pq-quote {
-      font-family:'Playfair Display',serif;font-size:clamp(1.3rem,2.5vw,2rem);
-      font-style:italic;text-align:center;max-width:800px;line-height:1.5;
-    }
-    .pq-quote em { color:var(--yellow); }
-    .pq-attr { display:block;margin-top:1.5rem;font-family:'DM Sans',sans-serif;font-size:.8rem;font-style:normal;color:var(--textsub);letter-spacing:.08em; }
 
-    /* ═══════════════════════════════════════
-    INSTAGRAM
-    ═══════════════════════════════════════ */
-    .ig-sec { padding:7rem 0; }
-    .ig-hdr { text-align:center;margin-bottom:3rem; }
-    .ig-handle {
-      display:inline-flex;align-items:center;gap:.5rem;
-      color:var(--textsub);font-size:.9rem;font-weight:600;letter-spacing:.04em;
-      padding:.4rem 1rem;border:1px solid var(--border);border-radius:50px;
-      transition:color .2s,border-color .2s;margin:.5rem 0 .3rem;
+    .mi:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, .5);
     }
-    .ig-handle:hover { color:#fff;border-color:rgba(255,255,255,.2); }
-    .ig-svg { width:16px;height:16px;fill:currentColor;flex-shrink:0; }
-    .ig-grid {
-      display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:2rem;
-    }
-    .ig-tile { position:relative;border-radius:14px;overflow:hidden;aspect-ratio:1;cursor:pointer; }
-    .ig-tile img { width:100%;height:100%;object-fit:cover;transition:transform .4s; }
-    .ig-tile:hover img { transform:scale(1.08); }
-    .ig-tile-ov {
-      position:absolute;inset:0;background:rgba(5,13,5,.5);
-      display:flex;align-items:center;justify-content:center;
-      opacity:0;transition:opacity .3s;
-    }
-    .ig-tile:hover .ig-tile-ov { opacity:1; }
-    .ig-lbl {
-      position:absolute;bottom:0;left:0;right:0;padding:.6rem .8rem;
-      background:linear-gradient(to top,rgba(5,13,5,.9),transparent);
-      font-size:.72rem;font-weight:600;
-    }
-    .ig-cta { text-align:center; }
-    .ig-cta a {
-      display:inline-flex;align-items:center;gap:.5rem;
-      background:rgba(255,255,255,.04);border:1px solid var(--border);
-      padding:.75rem 1.75rem;border-radius:50px;font-weight:600;font-size:.9rem;
-      transition:background .2s,border-color .2s;
-    }
-    .ig-cta a:hover { background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15); }
-    .ig-note { font-size:.72rem;color:var(--textsub);margin-top:.75rem; }
 
-    /* ═══════════════════════════════════════
-    FOOTER
-    ═══════════════════════════════════════ */
-    footer {
-      background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:3rem 0 1.5rem;
+    .mi img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .5s;
     }
-    .ft-grid { display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:2rem; }
-    .ft-brand-logo { margin-bottom:.75rem; }
-    .ft-logo-c {
-      width:48px;height:48px;border-radius:50%;
-      background:linear-gradient(135deg,var(--green),var(--green2));
-      display:flex;align-items:center;justify-content:center;
-      font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;
+
+    .mi:hover img {
+      transform: scale(1.07);
     }
-    .ft-brand-n { font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;margin:.4rem 0; }
-    .ft-brand-n em { color:var(--yellow);font-style:italic; }
-    .ft-tagline { font-size:.82rem;color:var(--textsub);line-height:1.6;max-width:260px; }
-    .ft-col h4 { font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--yellow);margin-bottom:1rem; }
-    .ft-col p, .ft-col a { display:block;font-size:.85rem;color:var(--textsub);margin-bottom:.4rem; }
-    .ft-col a:hover { color:#fff; }
-    .ft-open {
-      display:inline-flex;align-items:center;gap:.4rem;
-      background:rgba(76,175,80,.1);border:1px solid rgba(76,175,80,.3);
-      padding:.2rem .7rem;border-radius:50px;font-size:.7rem;font-weight:600;color:#81C784;
-      margin-top:.5rem;
+
+    .mi.wide {
+      grid-column: span 2;
     }
-    .open-dot { width:6px;height:6px;border-radius:50%;background:#4CAF50;animation:pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-    .ft-bottom {
-      border-top:1px solid var(--border);padding-top:1.5rem;
-      display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
-      font-size:.78rem;color:var(--textsub);
+
+    .mi-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(5, 13, 5, .95) 0%, rgba(5, 13, 5, .4) 50%, transparent 100%);
+      transition: opacity .3s;
     }
-    .ft-bottom a { color:var(--textsub);transition:color .2s; }
-    .ft-bottom a:hover { color:#fff; }
+
+    .mi:hover .mi-overlay {
+      opacity: .85;
+    }
+
+    .mi-cnt {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.5rem;
+    }
+
+    .mi-tag {
+      display: inline-block;
+      margin-bottom: .5rem;
+      background: rgba(255, 210, 0, .15);
+      border: 1px solid rgba(255, 210, 0, .3);
+      color: var(--yellow);
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .25rem .7rem;
+      border-radius: 50px;
+    }
+
+    .mi-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: .3rem;
+    }
+
+    .mi-desc {
+      font-size: .8rem;
+      color: rgba(255, 255, 255, .65);
+      line-height: 1.5;
+      margin-bottom: .5rem;
+    }
+
+    .mi-price {
+      font-weight: 700;
+      color: var(--green2);
+      font-size: .95rem;
+    }
+
 
     /* ═══════════════════════════════════════
     ABOUT PAGE
     ═══════════════════════════════════════ */
-    .about-page-body { padding:5rem 0; }
-    .about-story-grid { display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;margin-bottom:6rem; }
-    .about-img-stack { position:relative;min-height:500px; }
-    .abs-spin { position:absolute;top:-20px;right:-10px;z-index:3; }
-    .abs-main { width:100%;border-radius:20px;object-fit:cover;aspect-ratio:3/4;border:1px solid var(--border);box-shadow:0 30px 80px rgba(0,0,0,.5); }
-    .abs-float { position:absolute;bottom:-25px;right:-25px;width:140px;height:140px;border-radius:14px;object-fit:cover;border:3px solid var(--dark);box-shadow:0 15px 40px rgba(0,0,0,.5); }
-    .about-story-txt p { color:var(--textsub);line-height:1.8;margin-bottom:1rem;font-family:'Cormorant Garamond',serif;font-size:1.08rem; }
-    .values-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1rem; }
-    .value-card { background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:16px;padding:1.5rem;text-align:center;transition:border-color .3s,transform .3s; }
-    .value-card:hover { border-color:rgba(255,210,0,.2);transform:translateY(-4px); }
-    .value-icon { font-size:2rem;margin-bottom:.75rem; }
-    .value-t { font-weight:700;margin-bottom:.3rem; }
-    .value-d { font-size:.8rem;color:var(--textsub); }
-    .ceo-inner { display:grid;grid-template-columns:300px 1fr;gap:4rem;align-items:start; }
-    .ceo-img-wrap { text-align:center; }
-    .ceo-img { width:220px;height:220px;border-radius:50%;object-fit:cover;margin:0 auto 1rem;border:3px solid var(--yellow);box-shadow:0 20px 50px rgba(0,0,0,.5); }
-    .ceo-name { font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900; }
-    .ceo-title { font-size:.78rem;color:var(--textsub);letter-spacing:.06em; }
-    .ig-metrics { display:flex;justify-content:center;gap:2rem;margin-top:1rem; }
-    .ig-metric-num { font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:var(--yellow); }
-    .ig-metric-lbl { font-size:.7rem;color:var(--textsub); }
-    .ceo-motivational { font-family:'Playfair Display',serif;font-size:1.4rem;font-style:italic;line-height:1.4;margin-bottom:1.5rem; }
-    .ceo-motivational em { color:var(--yellow); }
-    .ceo-quote-line { height:2px;background:linear-gradient(90deg,var(--yellow),transparent);margin-bottom:1.5rem; }
-    .ceo-msg { color:var(--textsub);line-height:1.8;margin-bottom:1rem;font-family:'Cormorant Garamond',serif;font-size:1.05rem; }
-    .ceo-sig { margin-top:2rem;border-top:1px solid var(--border);padding-top:1.5rem; }
-    .ceo-sig-txt { font-family:'Playfair Display',serif;font-size:1.5rem;font-style:italic;color:var(--yellow); }
-    .ceo-sig-role { font-size:.78rem;color:var(--textsub);letter-spacing:.06em; }
-    .timeline { position:relative;padding-left:2rem; }
-    .timeline::before { content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--yellow),var(--green),transparent); }
-    .tl-item { position:relative;margin-bottom:3rem;padding-left:2rem; }
-    .tl-item::before { content:'';position:absolute;left:-2rem;top:.5rem;transform:translateX(-50%);width:12px;height:12px;border-radius:50%;background:var(--yellow);box-shadow:0 0 0 3px rgba(255,210,0,.2); }
-    .tl-year { font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--yellow);margin-bottom:.4rem; }
-    .tl-h { font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:.5rem; }
-    .tl-p { font-size:.88rem;color:var(--textsub);line-height:1.7; }
-
-    /* ═══════════════════════════════════════
-    REVIEWS PAGE
-    ═══════════════════════════════════════ */
-    .reviews-page-body { padding:5rem 0; }
-    .big-rating-wrap { display:flex;align-items:center;gap:3rem;margin-bottom:4rem;padding:2.5rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:20px; }
-    .big-r-num { font-family:'Playfair Display',serif;font-size:5rem;font-weight:900;color:var(--yellow);line-height:1; }
-    .stars { font-size:1.5rem;color:var(--yellow);margin-bottom:.3rem; }
-    .reviews-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem; }
-    .rc { background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:16px;padding:1.5rem;transition:border-color .3s,transform .3s; }
-    .rc:hover { border-color:rgba(255,210,0,.15);transform:translateY(-3px); }
-    .rc-guide { font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green2);margin-bottom:.5rem; }
-    .rc-stars { color:var(--yellow);margin-bottom:.75rem; }
-    .rc-txt { font-family:'Cormorant Garamond',serif;font-size:1rem;line-height:1.6;color:rgba(255,255,255,.8);margin-bottom:1rem; }
-    .rc-author { font-weight:700;font-size:.88rem; }
-    .rc-meta { font-size:.72rem;color:var(--textsub);margin-top:.2rem; }
-
-    /* ═══════════════════════════════════════
-    CONTACT PAGE
-    ═══════════════════════════════════════ */
-    .contact-page-body { padding:5rem 0; }
-    .contact-grid { display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start; }
-    .c-cards { display:flex;flex-direction:column;gap:.75rem;margin:1.5rem 0; }
-    .c-card { display:flex;gap:1rem;align-items:flex-start;padding:1rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px; }
-    .c-card-icon { font-size:1.3rem;flex-shrink:0; }
-    .c-card-lbl { font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--textsub);margin-bottom:.2rem; }
-    .c-card-val { font-size:.88rem; }
-    .c-card-val a:hover { color:var(--yellow); }
-    .hours-open { display:inline-flex;align-items:center;gap:.4rem;font-size:.7rem;font-weight:600;color:#81C784;margin-top:.3rem; }
-    .map-wrap { border-radius:16px;overflow:hidden;border:1px solid var(--border);margin-top:1.5rem; }
-    .map-wrap iframe { width:100%;height:280px;border:none;display:block; }
-    .contact-form-area { background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:20px;padding:2.5rem; }
-    .form-intro { font-size:.88rem;color:var(--textsub);margin-bottom:1.5rem; }
-    .f-row { display:grid;grid-template-columns:1fr 1fr;gap:1rem; }
-    .fg { margin-bottom:1.2rem; }
-    .fl { display:block;font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--textsub);margin-bottom:.5rem; }
-    .fi, .fsel, .fta {
-      width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);
-      border-radius:10px;padding:.75rem 1rem;color:#fff;font-family:'DM Sans',sans-serif;font-size:.9rem;
-      outline:none;transition:border-color .2s;
+    .about-page-body {
+      padding: 5rem 0;
     }
-    .fi:focus, .fsel:focus, .fta:focus { border-color:rgba(255,210,0,.4); }
-    .fsel option { background:#0a1a0a; }
-    .fta { height:130px;resize:none; }
-    .f-submit {
-      width:100%;padding:1rem;border-radius:12px;border:none;cursor:pointer;
-      background:linear-gradient(135deg,var(--yellow),#FFA000);
-      color:#000;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.04em;
-      transition:transform .2s,box-shadow .2s;
+
+    .about-story-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+      margin-bottom: 6rem;
     }
-    .f-submit:hover { transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,210,0,.3); }
+
+    .about-img-stack {
+      position: relative;
+      min-height: 500px;
+    }
+
+    .abs-spin {
+      position: absolute;
+      top: -20px;
+      right: -10px;
+      z-index: 3;
+    }
+
+    .abs-main {
+      width: 100%;
+      border-radius: 20px;
+      object-fit: cover;
+      aspect-ratio: 3/4;
+      border: 1px solid var(--border);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, .5);
+    }
+
+    .abs-float {
+      position: absolute;
+      bottom: -25px;
+      right: -25px;
+      width: 140px;
+      height: 140px;
+      border-radius: 14px;
+      object-fit: cover;
+      border: 3px solid var(--dark);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, .5);
+    }
+
+    .about-story-txt p {
+      color: var(--textsub);
+      line-height: 1.8;
+      margin-bottom: 1rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.08rem;
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .value-card {
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: border-color .3s, transform .3s;
+    }
+
+    .value-card:hover {
+      border-color: rgba(255, 210, 0, .2);
+      transform: translateY(-4px);
+    }
+
+    .value-icon {
+      font-size: 2rem;
+      margin-bottom: .75rem;
+    }
+
+    .value-t {
+      font-weight: 700;
+      margin-bottom: .3rem;
+    }
+
+    .value-d {
+      font-size: .8rem;
+      color: var(--textsub);
+    }
+
+    .ceo-inner {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .ceo-img-wrap {
+      text-align: center;
+    }
+
+    .ceo-img {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 1rem;
+      border: 3px solid var(--yellow);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, .5);
+    }
+
+    .ceo-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+    }
+
+    .ceo-title {
+      font-size: .78rem;
+      color: var(--textsub);
+      letter-spacing: .06em;
+    }
+
+    .ig-metrics {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    .ig-metric-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--yellow);
+    }
+
+    .ig-metric-lbl {
+      font-size: .7rem;
+      color: var(--textsub);
+    }
+
+    .ceo-motivational {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-style: italic;
+      line-height: 1.4;
+      margin-bottom: 1.5rem;
+    }
+
+    .ceo-motivational em {
+      color: var(--yellow);
+    }
+
+    .ceo-quote-line {
+      height: 2px;
+      background: linear-gradient(90deg, var(--yellow), transparent);
+      margin-bottom: 1.5rem;
+    }
+
+    .ceo-msg {
+      color: var(--textsub);
+      line-height: 1.8;
+      margin-bottom: 1rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+    }
+
+    .ceo-sig {
+      margin-top: 2rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+    }
+
+    .ceo-sig-txt {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-style: italic;
+      color: var(--yellow);
+    }
+
+    .ceo-sig-role {
+      font-size: .78rem;
+      color: var(--textsub);
+      letter-spacing: .06em;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--yellow), var(--green), transparent);
+    }
+
+    .tl-item {
+      position: relative;
+      margin-bottom: 3rem;
+      padding-left: 2rem;
+    }
+
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem;
+      top: .5rem;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--yellow);
+      box-shadow: 0 0 0 3px rgba(255, 210, 0, .2);
+    }
+
+    .tl-year {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: .4rem;
+    }
+
+    .tl-h {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: .5rem;
+    }
+
+    .tl-p {
+      font-size: .88rem;
+      color: var(--textsub);
+      line-height: 1.7;
+    }
 
     /* ═══════════════════════════════════════
     MENU ITEM POPUPS / MODALS
     ═══════════════════════════════════════ */
     .momo-modal-overlay {
-      position:fixed;inset:0;z-index:9999;
-      background:rgba(0,0,0,0.82);
-      backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-      display:flex;align-items:center;justify-content:center;padding:1.5rem;
-      opacity:0;pointer-events:none;transition:opacity .35s ease;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .35s ease;
     }
-    .momo-modal-overlay.open { opacity:1;pointer-events:all; }
+
+    .momo-modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
     .momo-modal {
-      background:#0a1a0a;border:1px solid rgba(255,255,255,0.07);
-      border-radius:24px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;
-      position:relative;
-      transform:translateY(30px) scale(0.97);
-      transition:transform .4s cubic-bezier(0.34,1.56,0.64,1);
-      box-shadow:0 0 0 1px rgba(255,210,0,.08),0 40px 100px rgba(0,0,0,.7),0 0 60px rgba(46,125,32,.07);
-      scrollbar-width:none;
+      background: #0a1a0a;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 24px;
+      max-width: 680px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      transform: translateY(30px) scale(0.97);
+      transition: transform .4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 0 0 1px rgba(255, 210, 0, .08), 0 40px 100px rgba(0, 0, 0, .7), 0 0 60px rgba(46, 125, 32, .07);
+      scrollbar-width: none;
     }
-    .momo-modal::-webkit-scrollbar { display:none; }
-    .momo-modal-overlay.open .momo-modal { transform:translateY(0) scale(1); }
-    .mm-img-wrap { position:relative;height:240px;overflow:hidden;flex-shrink:0; }
-    .mm-img-wrap img { width:100%;height:100%;object-fit:cover;display:block;transition:transform 6s ease; }
-    .momo-modal-overlay.open .mm-img-wrap img { transform:scale(1.06); }
+
+    .momo-modal::-webkit-scrollbar {
+      display: none;
+    }
+
+    .momo-modal-overlay.open .momo-modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .mm-img-wrap {
+      position: relative;
+      height: 240px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .mm-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 6s ease;
+    }
+
+    .momo-modal-overlay.open .mm-img-wrap img {
+      transform: scale(1.06);
+    }
+
     .mm-img-gradient {
-      position:absolute;inset:0;
-      background:linear-gradient(to bottom,transparent 30%,rgba(10,26,10,.6) 70%,#0a1a0a 100%);
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 30%, rgba(10, 26, 10, .6) 70%, #0a1a0a 100%);
     }
+
     .mm-tag-overlay {
-      position:absolute;top:1.2rem;left:1.2rem;
-      background:rgba(255,210,0,.12);border:1px solid rgba(255,210,0,.35);
-      color:var(--yellow);font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-      padding:.35rem .9rem;border-radius:50px;backdrop-filter:blur(8px);
+      position: absolute;
+      top: 1.2rem;
+      left: 1.2rem;
+      background: rgba(255, 210, 0, .12);
+      border: 1px solid rgba(255, 210, 0, .35);
+      color: var(--yellow);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .35rem .9rem;
+      border-radius: 50px;
+      backdrop-filter: blur(8px);
     }
+
     .mm-close {
-      position:absolute;top:1.1rem;right:1.1rem;
-      width:38px;height:38px;background:rgba(10,26,10,.7);
-      border:1px solid rgba(255,255,255,.1);border-radius:50%;
-      color:#fff;font-size:1.1rem;cursor:pointer;
-      display:flex;align-items:center;justify-content:center;
-      transition:all .2s;backdrop-filter:blur(8px);z-index:10;
+      position: absolute;
+      top: 1.1rem;
+      right: 1.1rem;
+      width: 38px;
+      height: 38px;
+      background: rgba(10, 26, 10, .7);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 50%;
+      color: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+      backdrop-filter: blur(8px);
+      z-index: 10;
     }
-    .mm-close:hover { background:rgba(46,125,32,.5);border-color:rgba(255,210,0,.4);transform:rotate(90deg); }
-    .mm-body { padding:1.5rem 2rem 2rem; }
-    .mm-name { font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:900;color:#fff;line-height:1.15;margin:0 0 .4rem; }
-    .mm-name em { color:var(--yellow);font-style:italic; }
-    .mm-price-row { display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1rem; }
-    .mm-price { font-family:'DM Sans',sans-serif;font-size:1.4rem;font-weight:700;color:var(--green2);letter-spacing:-.02em; }
+
+    .mm-close:hover {
+      background: rgba(46, 125, 32, .5);
+      border-color: rgba(255, 210, 0, .4);
+      transform: rotate(90deg);
+    }
+
+    .mm-body {
+      padding: 1.5rem 2rem 2rem;
+    }
+
+    .mm-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.75rem;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.15;
+      margin: 0 0 .4rem;
+    }
+
+    .mm-name em {
+      color: var(--yellow);
+      font-style: italic;
+    }
+
+    .mm-price-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .mm-price {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--green2);
+      letter-spacing: -.02em;
+    }
+
     .mm-veg-badge {
-      display:flex;align-items:center;gap:.35rem;
-      background:rgba(76,175,80,.1);border:1px solid rgba(76,175,80,.3);
-      border-radius:50px;padding:.25rem .7rem;font-size:.72rem;font-weight:600;color:#81C784;letter-spacing:.05em;
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      background: rgba(76, 175, 80, .1);
+      border: 1px solid rgba(76, 175, 80, .3);
+      border-radius: 50px;
+      padding: .25rem .7rem;
+      font-size: .72rem;
+      font-weight: 600;
+      color: #81C784;
+      letter-spacing: .05em;
     }
-    .mm-veg-dot { width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0; }
+
+    .mm-veg-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4CAF50;
+      flex-shrink: 0;
+    }
+
     .mm-nonveg-badge {
-      display:flex;align-items:center;gap:.35rem;
-      background:rgba(244,67,54,.1);border:1px solid rgba(244,67,54,.3);
-      border-radius:50px;padding:.25rem .7rem;font-size:.72rem;font-weight:600;color:#EF9A9A;letter-spacing:.05em;
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      background: rgba(244, 67, 54, .1);
+      border: 1px solid rgba(244, 67, 54, .3);
+      border-radius: 50px;
+      padding: .25rem .7rem;
+      font-size: .72rem;
+      font-weight: 600;
+      color: #EF9A9A;
+      letter-spacing: .05em;
     }
-    .mm-nonveg-dot { width:8px;height:8px;border-radius:50%;background:#F44336;flex-shrink:0; }
-    .mm-desc { font-family:'Cormorant Garamond',serif;font-size:1.08rem;color:rgba(255,255,255,.65);line-height:1.6;margin-bottom:1.3rem; }
-    .mm-highlights { display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem; }
+
+    .mm-nonveg-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #F44336;
+      flex-shrink: 0;
+    }
+
+    .mm-desc {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.08rem;
+      color: rgba(255, 255, 255, .65);
+      line-height: 1.6;
+      margin-bottom: 1.3rem;
+    }
+
+    .mm-highlights {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-bottom: 1.5rem;
+    }
+
     .mm-hl {
-      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
-      border-radius:8px;padding:.3rem .75rem;font-family:'DM Sans',sans-serif;font-size:.78rem;color:rgba(255,255,255,.55);
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 8px;
+      padding: .3rem .75rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .78rem;
+      color: rgba(255, 255, 255, .55);
     }
-    .mm-hl span { color:var(--yellow);margin-right:.35rem; }
-    .mm-variants { display:flex;gap:.75rem;margin-bottom:1.5rem; }
+
+    .mm-hl span {
+      color: var(--yellow);
+      margin-right: .35rem;
+    }
+
+    .mm-variants {
+      display: flex;
+      gap: .75rem;
+      margin-bottom: 1.5rem;
+    }
+
     .mm-variant {
-      flex:1;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
-      border-radius:14px;padding:.85rem 1rem;cursor:pointer;transition:all .2s;text-align:center;
+      flex: 1;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 14px;
+      padding: .85rem 1rem;
+      cursor: pointer;
+      transition: all .2s;
+      text-align: center;
     }
-    .mm-variant:hover,.mm-variant.sel {
-      background:rgba(46,125,32,.15);border-color:rgba(76,175,80,.4);
+
+    .mm-variant:hover,
+    .mm-variant.sel {
+      background: rgba(46, 125, 32, .15);
+      border-color: rgba(76, 175, 80, .4);
     }
-    .mm-variant-icon { font-size:1.4rem;margin-bottom:.2rem; }
-    .mm-variant-name { font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;color:#fff; }
-    .mm-variant-price { font-family:'DM Sans',sans-serif;font-size:.78rem;color:var(--green2);margin-top:.15rem; }
-    .mm-cta-row { display:flex;gap:.75rem;flex-wrap:wrap; }
+
+    .mm-variant-icon {
+      font-size: 1.4rem;
+      margin-bottom: .2rem;
+    }
+
+    .mm-variant-name {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .85rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .mm-variant-price {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .78rem;
+      color: var(--green2);
+      margin-top: .15rem;
+    }
+
+    .mm-cta-row {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+
     .mm-btn-order {
-      flex:1;min-width:160px;
-      background:linear-gradient(135deg,var(--yellow),#FFA000);
-      color:#0a1a0a;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:.04em;
-      border:none;border-radius:12px;padding:.95rem 1.5rem;cursor:pointer;
-      transition:all .25s;text-align:center;
-      display:flex;align-items:center;justify-content:center;gap:.5rem;
+      flex: 1;
+      min-width: 160px;
+      background: linear-gradient(135deg, var(--yellow), #FFA000);
+      color: #0a1a0a;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .9rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      border: none;
+      border-radius: 12px;
+      padding: .95rem 1.5rem;
+      cursor: pointer;
+      transition: all .25s;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
     }
-    .mm-btn-order:hover { transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,210,0,.3); }
+
+    .mm-btn-order:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(255, 210, 0, .3);
+    }
+
     .mm-btn-wa {
-      background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);
-      color:#25D366;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;
-      border-radius:12px;padding:.95rem 1.3rem;cursor:pointer;transition:all .25s;
-      display:flex;align-items:center;gap:.5rem;text-decoration:none;
+      background: rgba(37, 211, 102, .12);
+      border: 1px solid rgba(37, 211, 102, .3);
+      color: #25D366;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .88rem;
+      font-weight: 600;
+      border-radius: 12px;
+      padding: .95rem 1.3rem;
+      cursor: pointer;
+      transition: all .25s;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      text-decoration: none;
     }
-    .mm-btn-wa:hover { background:rgba(37,211,102,.2);transform:translateY(-2px); }
+
+    .mm-btn-wa:hover {
+      background: rgba(37, 211, 102, .2);
+      transform: translateY(-2px);
+    }
 
     /* ── Full Menu Table inside popup ── */
     .fmt-wrap {
       margin-bottom: 1.5rem;
-      border: 1px solid rgba(255,210,0,0.15);
+      border: 1px solid rgba(255, 210, 0, 0.15);
       border-radius: 16px;
       overflow: hidden;
     }
+
     .fmt-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(255,210,0,0.08);
-      border-bottom: 1px solid rgba(255,210,0,0.15);
+      background: rgba(255, 210, 0, 0.08);
+      border-bottom: 1px solid rgba(255, 210, 0, 0.15);
       padding: 0.75rem 1.1rem;
     }
+
     .fmt-title {
       font-family: 'Playfair Display', serif;
       font-size: 1rem;
@@ -724,19 +948,23 @@
       color: var(--yellow);
       letter-spacing: 0.02em;
     }
+
     .fmt-sub {
       font-size: 0.7rem;
       color: var(--textsub);
       letter-spacing: 0.06em;
     }
+
     .fmt-table {
       width: 100%;
       border-collapse: collapse;
     }
+
     .fmt-table thead tr {
-      background: rgba(255,255,255,0.03);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
+
     .fmt-th-item {
       text-align: left;
       padding: 0.6rem 1.1rem;
@@ -746,6 +974,7 @@
       text-transform: uppercase;
       color: var(--textsub);
     }
+
     .fmt-th-price {
       text-align: center;
       padding: 0.6rem 0.75rem;
@@ -756,14 +985,28 @@
       color: var(--textsub);
       width: 100px;
     }
+
     .fmt-row {
-      border-bottom: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
       transition: background 0.2s;
     }
-    .fmt-row:last-child { border-bottom: none; }
-    .fmt-row:hover { background: rgba(255,255,255,0.03); }
-    .fmt-active { border-left: 3px solid var(--yellow) !important; }
-    .fmt-name { padding: 0.7rem 1.1rem; }
+
+    .fmt-row:last-child {
+      border-bottom: none;
+    }
+
+    .fmt-row:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .fmt-active {
+      border-left: 3px solid var(--yellow) !important;
+    }
+
+    .fmt-name {
+      padding: 0.7rem 1.1rem;
+    }
+
     .fmt-item-name {
       font-family: 'Playfair Display', serif;
       font-size: 0.95rem;
@@ -771,6 +1014,7 @@
       color: var(--yellow);
       letter-spacing: 0.03em;
     }
+
     .fmt-item-sub {
       font-size: 0.72rem;
       color: var(--textsub);
@@ -778,6 +1022,7 @@
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
     }
+
     .fmt-price {
       text-align: center;
       padding: 0.7rem 0.75rem;
@@ -785,47 +1030,154 @@
       font-size: 0.88rem;
       font-weight: 700;
     }
-    .fmt-chicken { color: #FF8A65; }
-    .fmt-veg { color: #81C784; }
-    .fmt-na { color: rgba(255,255,255,0.2); font-weight: 400; }
+
+    .fmt-chicken {
+      color: #FF8A65;
+    }
+
+    .fmt-veg {
+      color: #81C784;
+    }
+
+    .fmt-na {
+      color: rgba(255, 255, 255, 0.2);
+      font-weight: 400;
+    }
 
     /* ═══════════════════════════════════════
     RESPONSIVE
     ═══════════════════════════════════════ */
     @media(max-width:900px) {
-      .nav-links { display:none; }
-      .hamburger { display:flex; }
-      .hero-inner { grid-template-columns:1fr;gap:2rem; }
-      .hero-img-side { display:none; }
-      .about-grid { grid-template-columns:1fr; }
-      .about-visual { display:none; }
-      .menu-grid { grid-template-columns:1fr 1fr; }
-      .mi.wide { grid-column:span 2; }
-      .ig-grid { grid-template-columns:repeat(2,1fr); }
-      .ft-grid { grid-template-columns:1fr;gap:2rem; }
-      .about-story-grid { grid-template-columns:1fr; }
-      .about-img-stack { display:none; }
-      .values-grid { grid-template-columns:repeat(2,1fr); }
-      .ceo-inner { grid-template-columns:1fr; }
-      .reviews-grid { grid-template-columns:1fr 1fr; }
-      .contact-grid { grid-template-columns:1fr; }
-      .f-row { grid-template-columns:1fr; }
-      .big-rating-wrap { flex-direction:column;text-align:center; }
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .hero-img-side {
+        display: none;
+      }
+
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .about-visual {
+        display: none;
+      }
+
+      .menu-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .mi.wide {
+        grid-column: span 2;
+      }
+
+      .ig-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .ft-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .about-story-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .about-img-stack {
+        display: none;
+      }
+
+      .values-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .ceo-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .reviews-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .f-row {
+        grid-template-columns: 1fr;
+      }
+
+      .big-rating-wrap {
+        flex-direction: column;
+        text-align: center;
+      }
     }
+
     @media(max-width:540px) {
-      .menu-grid { grid-template-columns:1fr; }
-      .mi.wide { grid-column:span 1; }
-      .ig-grid { grid-template-columns:repeat(2,1fr); }
-      .reviews-grid { grid-template-columns:1fr; }
-      .values-grid { grid-template-columns:1fr; }
-      .pillars { grid-template-columns:1fr; }
-      .hero-stats { gap:1.5rem; }
-      .mm-body { padding:1.2rem 1.2rem 1.5rem; }
-      .mm-img-wrap { height:190px; }
-      .mm-name { font-size:1.4rem; }
-      .mm-variants { flex-direction:column; }
-      .mm-cta-row { flex-direction:column; }
-      .mm-btn-order,.mm-btn-wa { width:100%;justify-content:center; }
+      .menu-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mi.wide {
+        grid-column: span 1;
+      }
+
+      .ig-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .reviews-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .values-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pillars {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stats {
+        gap: 1.5rem;
+      }
+
+      .mm-body {
+        padding: 1.2rem 1.2rem 1.5rem;
+      }
+
+      .mm-img-wrap {
+        height: 190px;
+      }
+
+      .mm-name {
+        font-size: 1.4rem;
+      }
+
+      .mm-variants {
+        flex-direction: column;
+      }
+
+      .mm-cta-row {
+        flex-direction: column;
+      }
+
+      .mm-btn-order,
+      .mm-btn-wa {
+        width: 100%;
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -838,7 +1190,8 @@
   <!-- WhatsApp -->
   <a href="https://wa.me/97477705150" target="_blank" class="wa-btn" title="Chat on WhatsApp">
     <svg viewBox="0 0 24 24">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+      <path
+        d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
     </svg>
   </a>
 
@@ -888,7 +1241,8 @@
             <div class="ey-txt">🇮🇳 Authentic Delhi Street Food · Doha</div>
           </div>
           <h1><span class="h1a">Taste of</span><span class="h1b">Real Delhi</span><span class="h1c">Momos.</span></h1>
-          <p class="hero-sub">Steam, tandoori, afghani, kurkure — every dumpling carries the soul of authentic Delhi street food, now in Doha.</p>
+          <p class="hero-sub">Steam, tandoori, afghani, kurkure — every dumpling carries the soul of authentic Delhi
+            street food, now in Doha.</p>
           <div class="hero-btns">
             <button class="btn-y" onclick="navigate('contact')">Order Now</button>
             <button class="btn-outline" onclick="navigate('about')">Our Story</button>
@@ -938,8 +1292,12 @@
     <!-- TICKER -->
     <div class="ticker">
       <div class="ticker-inner">
-        <div class="ticker-item">Steam Momos <span>✦</span> Tandoori Momos <span>✦</span> Afghani Momos <span>✦</span> Kurkure Momos <span>✦</span> Cold Coffee <span>✦</span> Peach Iced Tea <span>✦</span> Cheesecake Shake <span>✦</span> Delhi Fries <span>✦</span></div>
-        <div class="ticker-item">Steam Momos <span>✦</span> Tandoori Momos <span>✦</span> Afghani Momos <span>✦</span> Kurkure Momos <span>✦</span> Cold Coffee <span>✦</span> Peach Iced Tea <span>✦</span> Cheesecake Shake <span>✦</span> Delhi Fries <span>✦</span></div>
+        <div class="ticker-item">Steam Momos <span>✦</span> Tandoori Momos <span>✦</span> Afghani Momos <span>✦</span>
+          Kurkure Momos <span>✦</span> Cold Coffee <span>✦</span> Peach Iced Tea <span>✦</span> Cheesecake Shake
+          <span>✦</span> Delhi Fries <span>✦</span></div>
+        <div class="ticker-item">Steam Momos <span>✦</span> Tandoori Momos <span>✦</span> Afghani Momos <span>✦</span>
+          Kurkure Momos <span>✦</span> Cold Coffee <span>✦</span> Peach Iced Tea <span>✦</span> Cheesecake Shake
+          <span>✦</span> Delhi Fries <span>✦</span></div>
       </div>
     </div>
 
@@ -965,8 +1323,14 @@
               <div class="sl-t">Our Story</div>
             </div>
             <h2 class="sec-h">We Brought<br><em>Delhi Home</em></h2>
-            <p style="color:var(--textsub);line-height:1.8;margin:1rem 0;font-family:'Cormorant Garamond',serif;font-size:1.08rem;">At Momowala, we bring the true flavors of Delhi straight to Qatar. From our signature momos to refreshing cold coffees, every bite carries the taste of real Delhi street food.</p>
-            <p style="color:var(--textsub);line-height:1.8;margin-bottom:1.5rem;font-family:'Cormorant Garamond',serif;font-size:1.08rem;">We use only fresh chicken and high-quality ingredients sourced from India — because authentic taste cannot be replicated with shortcuts.</p>
+            <p
+              style="color:var(--textsub);line-height:1.8;margin:1rem 0;font-family:'Cormorant Garamond',serif;font-size:1.08rem;">
+              At Momowala, we bring the true flavors of Delhi straight to Qatar. From our signature momos to refreshing
+              cold coffees, every bite carries the taste of real Delhi street food.</p>
+            <p
+              style="color:var(--textsub);line-height:1.8;margin-bottom:1.5rem;font-family:'Cormorant Garamond',serif;font-size:1.08rem;">
+              We use only fresh chicken and high-quality ingredients sourced from India — because authentic taste cannot
+              be replicated with shortcuts.</p>
             <div class="pillars">
               <div class="pillar rev">
                 <div class="pillar-i">🇮🇳</div>
@@ -980,7 +1344,7 @@
               </div>
               <div class="pillar rev" style="transition-delay:.2s">
                 <div class="pillar-i">💰</div>
-                <div class="pillar-t">QAR 10–50</div>
+                <div class="pillar-t">QAR 10–25</div>
                 <div class="pillar-d">Street food prices</div>
               </div>
               <div class="pillar rev" style="transition-delay:.3s">
@@ -1036,85 +1400,314 @@
               </div>
             </div>
             <div class="mlist">
-              <div class="mitem" onclick="openMenuModal('afghani')"><div class="mitem-l"><div class="mitem-name">AFGHANI</div><div class="mitem-sub">Creamy Smoky Momos</div></div><div class="mitem-r mitem-r-duo"><span class="mitem-badge nonveg">20 QAR</span><span class="mitem-badge veg">20 QAR</span></div></div>
-              <div class="mitem featured" onclick="openMenuModal('tandoori')"><div class="mitem-l"><div class="mitem-name">TANDOORI <span class="mitem-star">★ Best Seller</span></div><div class="mitem-sub">Smoky Tandoor Flavor</div></div><div class="mitem-r mitem-r-duo"><span class="mitem-badge nonveg">20 QAR</span><span class="mitem-badge veg">20 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('steam')"><div class="mitem-l"><div class="mitem-name">STEAM</div><div class="mitem-sub">Soft Juicy Momos</div></div><div class="mitem-r mitem-r-duo"><span class="mitem-badge nonveg">12 QAR</span><span class="mitem-badge veg">10 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('fried')"><div class="mitem-l"><div class="mitem-name">FRIED</div><div class="mitem-sub">Golden Crispy Momos</div></div><div class="mitem-r mitem-r-duo"><span class="mitem-badge nonveg">15 QAR</span><span class="mitem-badge veg">15 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('cheesecorn')"><div class="mitem-l"><div class="mitem-name">CHEESE CORN</div><div class="mitem-sub">Cheesy Corn Delight</div></div><div class="mitem-r mitem-r-duo"><span class="mitem-badge nonveg">18 QAR</span><span class="mitem-badge veg-na">—</span></div></div>
-              <div class="mitem" onclick="openMenuModal('bakedcheese')"><div class="mitem-l"><div class="mitem-name">BAKED CHEESE</div><div class="mitem-sub">Oven Melted Cheese</div></div><div class="mitem-r mitem-r-duo"><span class="mitem-badge nonveg">20 QAR</span><span class="mitem-badge veg">20 QAR</span></div></div>
+              <div class="mitem" onclick="openMenuModal('afghani')">
+                <div class="mitem-l">
+                  <div class="mitem-name">AFGHANI</div>
+                  <div class="mitem-sub">Creamy Smoky Momos</div>
+                </div>
+                <div class="mitem-r mitem-r-duo"><span class="mitem-badge nonveg">20 QAR</span><span
+                    class="mitem-badge veg">20 QAR</span></div>
+              </div>
+              <div class="mitem featured" onclick="openMenuModal('tandoori')">
+                <div class="mitem-l">
+                  <div class="mitem-name">TANDOORI <span class="mitem-star">★ Best Seller</span></div>
+                  <div class="mitem-sub">Smoky Tandoor Flavor</div>
+                </div>
+                <div class="mitem-r mitem-r-duo"><span class="mitem-badge nonveg">20 QAR</span><span
+                    class="mitem-badge veg">20 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('steam')">
+                <div class="mitem-l">
+                  <div class="mitem-name">STEAM</div>
+                  <div class="mitem-sub">Soft Juicy Momos</div>
+                </div>
+                <div class="mitem-r mitem-r-duo"><span class="mitem-badge nonveg">12 QAR</span><span
+                    class="mitem-badge veg">10 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('fried')">
+                <div class="mitem-l">
+                  <div class="mitem-name">FRIED</div>
+                  <div class="mitem-sub">Golden Crispy Momos</div>
+                </div>
+                <div class="mitem-r mitem-r-duo"><span class="mitem-badge nonveg">15 QAR</span><span
+                    class="mitem-badge veg">15 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('cheesecorn')">
+                <div class="mitem-l">
+                  <div class="mitem-name">CHEESE CORN</div>
+                  <div class="mitem-sub">Cheesy Corn Delight</div>
+                </div>
+                <div class="mitem-r mitem-r-duo"><span class="mitem-badge nonveg">18 QAR</span><span
+                    class="mitem-badge veg-na">—</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('bakedcheese')">
+                <div class="mitem-l">
+                  <div class="mitem-name">BAKED CHEESE</div>
+                  <div class="mitem-sub">Oven Melted Cheese</div>
+                </div>
+                <div class="mitem-r mitem-r-duo"><span class="mitem-badge nonveg">20 QAR</span><span
+                    class="mitem-badge veg">20 QAR</span></div>
+              </div>
             </div>
           </div>
 
           <!-- PASTA -->
           <div class="mpanel" id="panel-pasta">
             <div class="mlist">
-              <div class="mitem" onclick="openMenuModal('whitesauce')"><div class="mitem-l"><div class="mitem-name">WHITE SAUCE</div><div class="mitem-sub">Creamy White Pasta</div></div><div class="mitem-r"><span class="mitem-badge single">23 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('redsauce')"><div class="mitem-l"><div class="mitem-name">RED SAUCE</div><div class="mitem-sub">Tangy Tomato Pasta</div></div><div class="mitem-r"><span class="mitem-badge single">20 QAR</span></div></div>
-              <div class="mitem featured" onclick="openMenuModal('bakedpasta')"><div class="mitem-l"><div class="mitem-name">BAKED <span class="mitem-star">★ Popular</span></div><div class="mitem-sub">Cheesy Baked Pasta</div></div><div class="mitem-r"><span class="mitem-badge single">25 QAR</span></div></div>
+              <div class="mitem" onclick="openMenuModal('whitesauce')">
+                <div class="mitem-l">
+                  <div class="mitem-name">WHITE SAUCE</div>
+                  <div class="mitem-sub">Creamy White Pasta</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">23 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('redsauce')">
+                <div class="mitem-l">
+                  <div class="mitem-name">RED SAUCE</div>
+                  <div class="mitem-sub">Tangy Tomato Pasta</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">20 QAR</span></div>
+              </div>
+              <div class="mitem featured" onclick="openMenuModal('bakedpasta')">
+                <div class="mitem-l">
+                  <div class="mitem-name">BAKED <span class="mitem-star">★ Popular</span></div>
+                  <div class="mitem-sub">Cheesy Baked Pasta</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">25 QAR</span></div>
+              </div>
             </div>
           </div>
 
           <!-- MAGGI -->
           <div class="mpanel" id="panel-maggi">
             <div class="mlist">
-              <div class="mitem" onclick="openMenuModal('maggicheese')"><div class="mitem-l"><div class="mitem-name">CHEESE CORN</div><div class="mitem-sub">Cheesy Corn Maggi</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('maggimasala')"><div class="mitem-l"><div class="mitem-name">MASALA</div><div class="mitem-sub">Classic Masala Maggi</div></div><div class="mitem-r"><span class="mitem-badge single">12 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('maggifarm')"><div class="mitem-l"><div class="mitem-name">FARM FRESH</div><div class="mitem-sub">Fresh Veggie Maggi</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
-              <div class="mitem featured" onclick="openMenuModal('maggichicken')"><div class="mitem-l"><div class="mitem-name">CHICKEN <span class="mitem-star">★ Must Try</span></div><div class="mitem-sub">Savory Chicken Maggi</div></div><div class="mitem-r"><span class="mitem-badge single">18 QAR</span></div></div>
+              <div class="mitem" onclick="openMenuModal('maggicheese')">
+                <div class="mitem-l">
+                  <div class="mitem-name">CHEESE CORN</div>
+                  <div class="mitem-sub">Cheesy Corn Maggi</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('maggimasala')">
+                <div class="mitem-l">
+                  <div class="mitem-name">MASALA</div>
+                  <div class="mitem-sub">Classic Masala Maggi</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">12 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('maggifarm')">
+                <div class="mitem-l">
+                  <div class="mitem-name">FARM FRESH</div>
+                  <div class="mitem-sub">Fresh Veggie Maggi</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
+              <div class="mitem featured" onclick="openMenuModal('maggichicken')">
+                <div class="mitem-l">
+                  <div class="mitem-name">CHICKEN <span class="mitem-star">★ Must Try</span></div>
+                  <div class="mitem-sub">Savory Chicken Maggi</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">18 QAR</span></div>
+              </div>
             </div>
           </div>
 
           <!-- BURGERS -->
           <div class="mpanel" id="panel-burgers">
             <div class="mlist">
-              <div class="mitem featured" onclick="openMenuModal('zinger')"><div class="mitem-l"><div class="mitem-name">ZINGER <span class="mitem-star">★ Popular</span></div><div class="mitem-sub">Crispy Chicken Burger</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('momoburgr')"><div class="mitem-l"><div class="mitem-name">MOMO</div><div class="mitem-sub">Spicy Fusion Burger</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('cheesyburg')"><div class="mitem-l"><div class="mitem-name">CHEESY</div><div class="mitem-sub">Loaded Cheese Burger</div></div><div class="mitem-r"><span class="mitem-badge single">18 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('highfries')"><div class="mitem-l"><div class="mitem-name">HIGH & FRIES</div><div class="mitem-sub">Veggie Delight Burger</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
+              <div class="mitem featured" onclick="openMenuModal('zinger')">
+                <div class="mitem-l">
+                  <div class="mitem-name">ZINGER <span class="mitem-star">★ Popular</span></div>
+                  <div class="mitem-sub">Crispy Chicken Burger</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('momoburgr')">
+                <div class="mitem-l">
+                  <div class="mitem-name">MOMO</div>
+                  <div class="mitem-sub">Spicy Fusion Burger</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('cheesyburg')">
+                <div class="mitem-l">
+                  <div class="mitem-name">CHEESY</div>
+                  <div class="mitem-sub">Loaded Cheese Burger</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">18 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('highfries')">
+                <div class="mitem-l">
+                  <div class="mitem-name">HIGH & FRIES</div>
+                  <div class="mitem-sub">Veggie Delight Burger</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
             </div>
           </div>
 
           <!-- FRIES -->
           <div class="mpanel" id="panel-fries">
             <div class="mlist">
-              <div class="mitem featured" onclick="openMenuModal('chessy')"><div class="mitem-l"><div class="mitem-name">CHESSY <span class="mitem-star">★ Best Seller</span></div><div class="mitem-sub">Loaded Cheese Fries</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('salted')"><div class="mitem-l"><div class="mitem-name">SALTED</div><div class="mitem-sub">Classic Salted Fries</div></div><div class="mitem-r"><span class="mitem-badge single">8 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('chicfries')"><div class="mitem-l"><div class="mitem-name">CHICKEN</div><div class="mitem-sub">Chicken Loaded Fries</div></div><div class="mitem-r"><span class="mitem-badge single">18 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('periperi')"><div class="mitem-l"><div class="mitem-name">PERI PERI</div><div class="mitem-sub">Spicy Peri Fries</div></div><div class="mitem-r"><span class="mitem-badge single">12 QAR</span></div></div>
+              <div class="mitem featured" onclick="openMenuModal('chessy')">
+                <div class="mitem-l">
+                  <div class="mitem-name">CHESSY <span class="mitem-star">★ Best Seller</span></div>
+                  <div class="mitem-sub">Loaded Cheese Fries</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('salted')">
+                <div class="mitem-l">
+                  <div class="mitem-name">SALTED</div>
+                  <div class="mitem-sub">Classic Salted Fries</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">8 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('chicfries')">
+                <div class="mitem-l">
+                  <div class="mitem-name">CHICKEN</div>
+                  <div class="mitem-sub">Chicken Loaded Fries</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">18 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('periperi')">
+                <div class="mitem-l">
+                  <div class="mitem-name">PERI PERI</div>
+                  <div class="mitem-sub">Spicy Peri Fries</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">12 QAR</span></div>
+              </div>
             </div>
           </div>
 
           <!-- SANDWICH -->
           <div class="mpanel" id="panel-sandwich">
             <div class="mlist">
-              <div class="mitem" onclick="openMenuModal('degree')"><div class="mitem-l"><div class="mitem-name">DEGREE</div><div class="mitem-sub">Grilled Beef Sandwich</div></div><div class="mitem-r"><span class="mitem-badge single">10 QAR</span></div></div>
-              <div class="mitem featured" onclick="openMenuModal('sandcheese')"><div class="mitem-l"><div class="mitem-name">CHEESE CORN <span class="mitem-star">★ Popular</span></div><div class="mitem-sub">Cheesy Corn Sandwich</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('sandveg')"><div class="mitem-l"><div class="mitem-name">VEGETABLE</div><div class="mitem-sub">Fresh Veggie Sandwich</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('sandchilli')"><div class="mitem-l"><div class="mitem-name">CHILLI</div><div class="mitem-sub">Spicy Chili Sandwich</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
+              <div class="mitem" onclick="openMenuModal('degree')">
+                <div class="mitem-l">
+                  <div class="mitem-name">DEGREE</div>
+                  <div class="mitem-sub">Grilled Beef Sandwich</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">10 QAR</span></div>
+              </div>
+              <div class="mitem featured" onclick="openMenuModal('sandcheese')">
+                <div class="mitem-l">
+                  <div class="mitem-name">CHEESE CORN <span class="mitem-star">★ Popular</span></div>
+                  <div class="mitem-sub">Cheesy Corn Sandwich</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('sandveg')">
+                <div class="mitem-l">
+                  <div class="mitem-name">VEGETABLE</div>
+                  <div class="mitem-sub">Fresh Veggie Sandwich</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('sandchilli')">
+                <div class="mitem-l">
+                  <div class="mitem-name">CHILLI</div>
+                  <div class="mitem-sub">Spicy Chili Sandwich</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
             </div>
           </div>
 
           <!-- LASSI -->
           <div class="mpanel" id="panel-lassi">
             <div class="mlist">
-              <div class="mitem" onclick="openMenuModal('lassiregular')"><div class="mitem-l"><div class="mitem-name">REGULAR</div><div class="mitem-sub">Classic Yogurt Lassi</div></div><div class="mitem-r"><span class="mitem-badge single">10 QAR</span></div></div>
-              <div class="mitem featured" onclick="openMenuModal('lassimango')"><div class="mitem-l"><div class="mitem-name">MANGO <span class="mitem-star">★ Favourite</span></div><div class="mitem-sub">Sweet Mango Lassi</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('lassistrawberry')"><div class="mitem-l"><div class="mitem-name">STRAWBERRY</div><div class="mitem-sub">Berry Sweet Lassi</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('lassijeera')"><div class="mitem-l"><div class="mitem-name">JEERA</div><div class="mitem-sub">Spiced Cumin Lassi</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
-              <div class="mitem" style="border-top:1px solid rgba(255,210,0,.15);margin-top:.5rem;padding-top:1rem;" onclick="openMenuModal('mojito')"><div class="mitem-l"><div class="mitem-name" style="color:var(--yellow)">🍃 MOJITO — Any Flavour</div><div class="mitem-sub">Fresh Mint Mojito</div></div><div class="mitem-r"><span class="mitem-badge single">12 QAR</span></div></div>
+              <div class="mitem" onclick="openMenuModal('lassiregular')">
+                <div class="mitem-l">
+                  <div class="mitem-name">REGULAR</div>
+                  <div class="mitem-sub">Classic Yogurt Lassi</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">10 QAR</span></div>
+              </div>
+              <div class="mitem featured" onclick="openMenuModal('lassimango')">
+                <div class="mitem-l">
+                  <div class="mitem-name">MANGO <span class="mitem-star">★ Favourite</span></div>
+                  <div class="mitem-sub">Sweet Mango Lassi</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('lassistrawberry')">
+                <div class="mitem-l">
+                  <div class="mitem-name">STRAWBERRY</div>
+                  <div class="mitem-sub">Berry Sweet Lassi</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('lassijeera')">
+                <div class="mitem-l">
+                  <div class="mitem-name">JEERA</div>
+                  <div class="mitem-sub">Spiced Cumin Lassi</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
+              <div class="mitem" style="border-top:1px solid rgba(255,210,0,.15);margin-top:.5rem;padding-top:1rem;"
+                onclick="openMenuModal('mojito')">
+                <div class="mitem-l">
+                  <div class="mitem-name" style="color:var(--yellow)">🍃 MOJITO — Any Flavour</div>
+                  <div class="mitem-sub">Fresh Mint Mojito</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">12 QAR</span></div>
+              </div>
             </div>
           </div>
 
           <!-- JUICE -->
           <div class="mpanel" id="panel-juice">
             <div class="mlist">
-              <div class="mitem" onclick="openMenuModal('watermelon')"><div class="mitem-l"><div class="mitem-name">WATERMELON</div><div class="mitem-sub">Fresh Watermelon Juice</div></div><div class="mitem-r"><span class="mitem-badge single">12 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('strawberryjuice')"><div class="mitem-l"><div class="mitem-name">STRAWBERRY</div><div class="mitem-sub">Fresh Strawberry Juice</div></div><div class="mitem-r"><span class="mitem-badge single">12 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('bananajuice')"><div class="mitem-l"><div class="mitem-name">BANANA</div><div class="mitem-sub">Creamy Banana Juice</div></div><div class="mitem-r"><span class="mitem-badge single">12 QAR</span></div></div>
-              <div class="mitem featured" onclick="openMenuModal('mangojuice')"><div class="mitem-l"><div class="mitem-name">MANGO <span class="mitem-star">★ Popular</span></div><div class="mitem-sub">Sweet Mango Juice</div></div><div class="mitem-r"><span class="mitem-badge single">12 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('avocadojuice')"><div class="mitem-l"><div class="mitem-name">AVOCADO</div><div class="mitem-sub">Creamy Avocado Juice</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('lemonmint')"><div class="mitem-l"><div class="mitem-name">LEMON MINT</div><div class="mitem-sub">Refreshing Mint Lemon</div></div><div class="mitem-r"><span class="mitem-badge single">10 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('cocktail')"><div class="mitem-l"><div class="mitem-name">COCKTAIL</div><div class="mitem-sub">Mixed Fruit Juice</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
+              <div class="mitem" onclick="openMenuModal('watermelon')">
+                <div class="mitem-l">
+                  <div class="mitem-name">WATERMELON</div>
+                  <div class="mitem-sub">Fresh Watermelon Juice</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">12 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('strawberryjuice')">
+                <div class="mitem-l">
+                  <div class="mitem-name">STRAWBERRY</div>
+                  <div class="mitem-sub">Fresh Strawberry Juice</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">12 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('bananajuice')">
+                <div class="mitem-l">
+                  <div class="mitem-name">BANANA</div>
+                  <div class="mitem-sub">Creamy Banana Juice</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">12 QAR</span></div>
+              </div>
+              <div class="mitem featured" onclick="openMenuModal('mangojuice')">
+                <div class="mitem-l">
+                  <div class="mitem-name">MANGO <span class="mitem-star">★ Popular</span></div>
+                  <div class="mitem-sub">Sweet Mango Juice</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">12 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('avocadojuice')">
+                <div class="mitem-l">
+                  <div class="mitem-name">AVOCADO</div>
+                  <div class="mitem-sub">Creamy Avocado Juice</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('lemonmint')">
+                <div class="mitem-l">
+                  <div class="mitem-name">LEMON MINT</div>
+                  <div class="mitem-sub">Refreshing Mint Lemon</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">10 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('cocktail')">
+                <div class="mitem-l">
+                  <div class="mitem-name">COCKTAIL</div>
+                  <div class="mitem-sub">Mixed Fruit Juice</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
             </div>
           </div>
 
@@ -1122,16 +1715,58 @@
           <div class="mpanel" id="panel-shakes">
             <div class="mlist-sub-header">Classic Milkshakes</div>
             <div class="mlist">
-              <div class="mitem" onclick="openMenuModal('chocolate')"><div class="mitem-l"><div class="mitem-name">CHOCOLATE</div><div class="mitem-sub">Rich Chocolate Shake</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('banana')"><div class="mitem-l"><div class="mitem-name">BANANA</div><div class="mitem-sub">Creamy Banana Shake</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('strawberrys')"><div class="mitem-l"><div class="mitem-name">STRAWBERRY</div><div class="mitem-sub">Sweet Strawberry Shake</div></div><div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('mangos')"><div class="mitem-l"><div class="mitem-name">MANGO</div><div class="mitem-sub">Tropical Mango Shake</div></div><div class="mitem-r"><span class="mitem-badge single">18 QAR</span></div></div>
+              <div class="mitem" onclick="openMenuModal('chocolate')">
+                <div class="mitem-l">
+                  <div class="mitem-name">CHOCOLATE</div>
+                  <div class="mitem-sub">Rich Chocolate Shake</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('banana')">
+                <div class="mitem-l">
+                  <div class="mitem-name">BANANA</div>
+                  <div class="mitem-sub">Creamy Banana Shake</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('strawberrys')">
+                <div class="mitem-l">
+                  <div class="mitem-name">STRAWBERRY</div>
+                  <div class="mitem-sub">Sweet Strawberry Shake</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">15 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('mangos')">
+                <div class="mitem-l">
+                  <div class="mitem-name">MANGO</div>
+                  <div class="mitem-sub">Tropical Mango Shake</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">18 QAR</span></div>
+              </div>
             </div>
             <div class="mlist-sub-header" style="margin-top:1.25rem;">Signature Shakes</div>
             <div class="mlist">
-              <div class="mitem featured" onclick="openMenuModal('cheesecakes')"><div class="mitem-l"><div class="mitem-name">CHEESE CAKE <span class="mitem-star">★ Must Try</span></div><div class="mitem-sub">Creamy Cheesecake Shake</div></div><div class="mitem-r"><span class="mitem-badge single">20 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('redvelvet')"><div class="mitem-l"><div class="mitem-name">RED VELVET</div><div class="mitem-sub">Velvet Cake Shake</div></div><div class="mitem-r"><span class="mitem-badge single">20 QAR</span></div></div>
-              <div class="mitem" onclick="openMenuModal('avocados')"><div class="mitem-l"><div class="mitem-name">AVOCADO</div><div class="mitem-sub">Smooth Avocado Shake</div></div><div class="mitem-r"><span class="mitem-badge single">20 QAR</span></div></div>
+              <div class="mitem featured" onclick="openMenuModal('cheesecakes')">
+                <div class="mitem-l">
+                  <div class="mitem-name">CHEESE CAKE <span class="mitem-star">★ Must Try</span></div>
+                  <div class="mitem-sub">Creamy Cheesecake Shake</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">20 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('redvelvet')">
+                <div class="mitem-l">
+                  <div class="mitem-name">RED VELVET</div>
+                  <div class="mitem-sub">Velvet Cake Shake</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">20 QAR</span></div>
+              </div>
+              <div class="mitem" onclick="openMenuModal('avocados')">
+                <div class="mitem-l">
+                  <div class="mitem-name">AVOCADO</div>
+                  <div class="mitem-sub">Smooth Avocado Shake</div>
+                </div>
+                <div class="mitem-r"><span class="mitem-badge single">20 QAR</span></div>
+              </div>
             </div>
           </div>
 
@@ -1144,7 +1779,8 @@
       <div class="pq-bg" id="pqBg"></div>
       <div class="pq-overlay">
         <blockquote class="pq-quote rev">
-          "The first bite with red chutney <em>took me straight back to Delhi</em> — the taste is exactly what we've been missing in Doha."
+          "The first bite with red chutney <em>took me straight back to Delhi</em> — the taste is exactly what we've
+          been missing in Doha."
           <span class="pq-attr">— Atif Qureshi · Google Review</span>
         </blockquote>
       </div>
@@ -1161,23 +1797,31 @@
           </div>
           <h2 class="sec-h" style="margin:.5rem 0;">Find Us on <em>Instagram</em></h2>
           <a href="https://www.instagram.com/momowalaqa/" target="_blank" rel="noopener" class="ig-handle">
-            <svg class="ig-svg" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            <svg class="ig-svg" viewBox="0 0 24 24">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+            </svg>
             @momowalaqa · 3,601 Followers
           </a>
-          <p style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--textsub);">30 posts · See our latest momos, specials & behind-the-scenes</p>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--textsub);">30 posts · See our
+            latest momos, specials & behind-the-scenes</p>
         </div>
-            <script src="https://elfsightcdn.com/platform.js" async></script>
+        <script src="https://elfsightcdn.com/platform.js" async></script>
 
         <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
-<div style="width:80%; margin:auto;">
-  <div class="elfsight-app-d7a5bda9-8863-4cac-a6b7-3c6bbf291861" data-elfsight-app-lazy></div>
+        <div style="width:80%; margin:auto;">
+          <div class="elfsight-app-d7a5bda9-8863-4cac-a6b7-3c6bbf291861" data-elfsight-app-lazy></div>
         </div>
         <div class="ig-cta rev">
           <a href="https://www.instagram.com/momowalaqa/" target="_blank" rel="noopener">
-            <svg class="ig-svg" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            <svg class="ig-svg" viewBox="0 0 24 24">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+            </svg>
             Follow @momowalaqa on Instagram
           </a>
-          <p class="ig-note">⚡ Click any photo above to view on Instagram · Instagram blocks live feed embedding on all external websites</p>
+          <p class="ig-note">⚡ Click any photo above to view on Instagram · Instagram blocks live feed embedding on all
+            external websites</p>
         </div>
       </div>
     </section>
@@ -1187,7 +1831,9 @@
       <div class="container">
         <div class="ft-grid">
           <div>
-            <div class="ft-brand-logo"><div class="ft-logo-c"><span>M</span></div></div>
+            <div class="ft-brand-logo">
+              <div class="ft-logo-c"><span>M</span></div>
+            </div>
             <div class="ft-brand-n">Momo<em>wala</em></div>
             <p class="ft-tagline">Bringing the real taste of Delhi straight to the streets of Doha.</p>
           </div>
@@ -1195,7 +1841,9 @@
             <h4>Hours</h4>
             <p>Monday – Sunday</p>
             <p>6:00 PM – 12:00 AM</p>
-            <div class="ft-open"><div class="open-dot"></div>Open Now</div>
+            <div class="ft-open">
+              <div class="open-dot"></div>Open Now
+            </div>
           </div>
           <div class="ft-col">
             <h4>Connect</h4>
@@ -1219,7 +1867,11 @@
   <div class="page" id="page-about">
     <div class="page-hero">
       <div class="container">
-        <div class="page-hero-label"><div class="sl"></div><div class="sl-t">Our Story</div><div class="sl"></div></div>
+        <div class="page-hero-label">
+          <div class="sl"></div>
+          <div class="sl-t">Our Story</div>
+          <div class="sl"></div>
+        </div>
         <h1 class="sec-h">About <em>Momowala</em></h1>
         <p>From the streets of Delhi to the heart of Doha — this is our story.</p>
       </div>
@@ -1233,71 +1885,200 @@
                 <div class="spin-logo-inner"><span style="font-size:1.4rem">M</span><small>Qatar</small></div>
               </div>
             </div>
-            <img class="abs-main" src="https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Momo preparation">
-            <img class="abs-float" src="https://images.pexels.com/photos/2347311/pexels-photo-2347311.jpeg?auto=compress&cs=tinysrgb&w=300" alt="Momos">
+            <img class="abs-main"
+              src="https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg?auto=compress&cs=tinysrgb&w=900"
+              alt="Momo preparation">
+            <img class="abs-float"
+              src="https://images.pexels.com/photos/2347311/pexels-photo-2347311.jpeg?auto=compress&cs=tinysrgb&w=300"
+              alt="Momos">
           </div>
           <div class="about-story-txt rev-r">
-            <div class="sec-label"><div class="sl"></div><div class="sl-t">Who We Are</div></div>
+            <div class="sec-label">
+              <div class="sl"></div>
+              <div class="sl-t">Who We Are</div>
+            </div>
             <h2 class="sec-h">Authentic Delhi<br><em>in Doha</em></h2>
-            <p>Momowala was born from a simple but powerful idea: bring the true, uncompromised taste of Delhi street food to Qatar's food lovers. We started small, with a deep passion for momos and an obsession with getting the flavours exactly right.</p>
-            <p>Every recipe is rooted in real Delhi tradition — from the way we steam, fry and grill our momos, to the chutneys and sauces we make in-house. We source fresh chicken and authentic spices directly from India, because shortcuts are not in our vocabulary.</p>
-            <p>Today we are proud to serve Doha's food community with an experience that is fresh, soulful, and truly unforgettable — one momo at a time.</p>
+            <p>Momowala was born from a simple but powerful idea: bring the true, uncompromised taste of Delhi street
+              food to Qatar's food lovers. We started small, with a deep passion for momos and an obsession with getting
+              the flavours exactly right.</p>
+            <p>Every recipe is rooted in real Delhi tradition — from the way we steam, fry and grill our momos, to the
+              chutneys and sauces we make in-house. We source fresh chicken and authentic spices directly from India,
+              because shortcuts are not in our vocabulary.</p>
+            <p>Today we are proud to serve Doha's food community with an experience that is fresh, soulful, and truly
+              unforgettable — one momo at a time.</p>
           </div>
         </div>
 
+
+
+
         <div class="rev" style="margin-bottom:5rem;">
-          <div class="sec-label"><div class="sl"></div><div class="sl-t">What We Stand For</div></div>
+          <div class="sec-label">
+            <div class="sl"></div>
+            <div class="sl-t">What We Stand For</div>
+          </div>
           <h2 class="sec-h" style="margin-bottom:2rem;">Our <em>Values</em></h2>
           <div class="values-grid">
-            <div class="value-card rev"><div class="value-icon">🇮🇳</div><div class="value-t">Authenticity</div><div class="value-d">Real Delhi recipes, never compromised</div></div>
-            <div class="value-card rev" style="transition-delay:.1s"><div class="value-icon">🥟</div><div class="value-t">Craftsmanship</div><div class="value-d">Every momo handcrafted with care</div></div>
-            <div class="value-card rev" style="transition-delay:.2s"><div class="value-icon">🌿</div><div class="value-t">Freshness</div><div class="value-d">Fresh ingredients sourced daily</div></div>
-            <div class="value-card rev" style="transition-delay:.3s"><div class="value-icon">💛</div><div class="value-t">Community</div><div class="value-d">Building a family of momo lovers in Qatar</div></div>
-            <div class="value-card rev" style="transition-delay:.4s"><div class="value-icon">🔥</div><div class="value-t">Passion</div><div class="value-d">Food made with love and fire</div></div>
-            <div class="value-card rev" style="transition-delay:.5s"><div class="value-icon">⭐</div><div class="value-t">Excellence</div><div class="value-d">Always improving, always learning</div></div>
+            <div class="value-card rev">
+              <div class="value-icon">🇮🇳</div>
+              <div class="value-t">Authenticity</div>
+              <div class="value-d">Real Delhi recipes, never compromised</div>
+            </div>
+            <div class="value-card rev" style="transition-delay:.1s">
+              <div class="value-icon">🥟</div>
+              <div class="value-t">Craftsmanship</div>
+              <div class="value-d">Every momo handcrafted with care</div>
+            </div>
+            <div class="value-card rev" style="transition-delay:.2s">
+              <div class="value-icon">🌿</div>
+              <div class="value-t">Freshness</div>
+              <div class="value-d">Fresh ingredients sourced daily</div>
+            </div>
+            <div class="value-card rev" style="transition-delay:.3s">
+              <div class="value-icon">💛</div>
+              <div class="value-t">Community</div>
+              <div class="value-d">Building a family of momo lovers in Qatar</div>
+            </div>
+            <div class="value-card rev" style="transition-delay:.4s">
+              <div class="value-icon">🔥</div>
+              <div class="value-t">Passion</div>
+              <div class="value-d">Food made with love and fire</div>
+            </div>
+            <div class="value-card rev" style="transition-delay:.5s">
+              <div class="value-icon">⭐</div>
+              <div class="value-t">Excellence</div>
+              <div class="value-d">Always improving, always learning</div>
+            </div>
           </div>
         </div>
 
         <div class="ceo-section" style="padding:4rem 0;margin-bottom:3rem;">
           <div class="ceo-inner">
             <div class="ceo-img-wrap rev-l">
-              <img class="ceo-img" src="./ceo2.png" alt="CEO of Momowala" onerror="this.style.background='#2E7D32';this.src=''">
-              <div class="ceo-name">Abhishek</div>
-              <div class="ceo-title">Founder & Chief Momo Officer</div>
+              <img class="ceo-img" src="./ceo2.png" alt="CEO of Momowala"
+                onerror="this.style.background='#2E7D32';this.src=''">
+              <div class="ceo-name">Abhishek Wasnik</div>
+              <div class="ceo-title">Founder and chief executive</div>
               <!-- <div class="ig-metrics" style="justify-content:center;margin-top:1rem;">
                 <div class="hstat"><div class="ig-metric-num">3,601</div><div class="ig-metric-lbl">Followers</div></div>
                 <div class="hstat"><div class="ig-metric-num">30</div><div class="ig-metric-lbl">Posts</div></div>
               </div> -->
             </div>
             <div class="ceo-content rev-r">
-              <div class="ceo-motivational">"Every momo we make is a <em>promise</em> — a promise of authenticity, of love, of Delhi."</div>
+              <div class="ceo-motivational">"Every momo we make is a <em>promise</em> — a promise of authenticity, of
+                love, of Delhi."</div>
               <div class="ceo-quote-line"></div>
               <div class="ceo-message-section">
-                <p class="ceo-msg">Momowala was born from a vision, passion for food, and the belief that great ideas come from meaningful connections.</p>
-                <p class="ceo-msg">I moved to Doha, Qatar with the intention of working a regular 9-5 job, but deep down I always had a dream of building something of my own. During that time, I spent countless hours researching how businesses operate in Doha, learning the market, and preparing myself for the right opportunity.</p>
-                <p class="ceo-msg">During this journey, I met Faizal from Delhi, a well-known food blogger on social media. What started as a simple meeting quickly turned into long conversations about life, ideas, and our shared vision for food. We met several times, often spending hours exchanging thoughts and inspiration.</p>
-                <p class="ceo-msg">One day, Faizal called me and shared his vision of the kind of food experience he wanted people in Doha to have. The idea instantly resonated with me. Without wasting any time, we started working on it the very next day.</p>
-                <p class="ceo-msg">Combining Faizal's social media reach and loyal community with my business vision and execution, Momowala was born.</p>
-                <p class="ceo-msg">Today, Momowala represents our passion for bringing authentic flavors and memorable food experiences to the people of Doha.</p>
+                <p class="ceo-msg">Momowala was born from a vision, passion for food, and the belief that great ideas
+                  come from meaningful connections.</p>
+                <p class="ceo-msg">I moved to Doha, Qatar with the intention of working a regular 9-5 job, but deep down
+                  I always had a dream of building something of my own. During that time, I spent countless hours
+                  researching how businesses operate in Doha, learning the market, and preparing myself for the right
+                  opportunity.</p>
+                <p class="ceo-msg">During this journey, I met Faizal from Delhi, a well-known food blogger on social
+                  media. What started as a simple meeting quickly turned into long conversations about life, ideas, and
+                  our shared vision for food. We met several times, often spending hours exchanging thoughts and
+                  inspiration.</p>
+                <p class="ceo-msg">One day, Faizal called me and shared his vision of the kind of food experience he
+                  wanted people in Doha to have. The idea instantly resonated with me. Without wasting any time, we
+                  started working on it the very next day.</p>
+                <p class="ceo-msg">Combining Faizal's social media reach and loyal community with my business vision and
+                  execution, Momowala was born.</p>
+                <p class="ceo-msg">Today, Momowala represents our passion for bringing authentic flavors and memorable
+                  food experiences to the people of Doha.</p>
               </div>
               <div class="ceo-sig">
                 <div>
-                  <div class="ceo-sig-txt">Abhishek</div>
-                  <div class="ceo-sig-role">Founder & CEO of @momowalaqa</div>
+                  <div class="ceo-sig-txt">Abhishek Wasnik</div>
+                  <div class="ceo-sig-role">Founder and chief executive</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
+
+
+
+        <!-- CEO -->
+        <div class="ceo-section" style="padding:4rem 0;margin-bottom:3rem;">
+          <div class="ceo-inner">
+            <div class="ceo-img-wrap rev-l">
+              <img class="ceo-img" src="./faisal.png" alt="CEO of Momowala"
+                onerror="this.style.background='#2E7D32';this.src=''">
+              <div class="ceo-name">Faisal</div>
+              <div class="ceo-title">founder and CEO</div>
+              <div class="ig-metrics" style="justify-content:center;margin-top:1rem;">
+                <div class="hstat">
+                  <div class="ig-metric-num">fzalvlog</div>
+                  <div class="ig-metric-lbl">Instagram</div>
+                </div>
+                <div class="hstat">
+                  <div class="ig-metric-num">26.6K</div>
+                  <div class="ig-metric-lbl">Followers</div>
+                </div>
+                <div class="hstat">
+                  <div class="ig-metric-num">543</div>
+                  <div class="ig-metric-lbl">Posts</div>
+                </div>
+              </div>
+            </div>
+            <div class="ceo-content rev-r">
+              <div class="ceo-motivational">
+                “Every momo we serve carries the soul of Delhi — crafted with passion, tradition, and love.”
+              </div>
+              <div class="ceo-quote-line"></div>
+              <p class="ceo-msg">I started Momowala with one dream: to bring the exact taste of Delhi's streets to every
+                food lover in Qatar. Growing up eating momos on the streets of Delhi, I knew what authentic meant — the
+                perfect fold, the right chutney, the smoke from the tandoor.</p>
+              <p class="ceo-msg">When I moved to Doha, I missed that taste every single day. So I decided to stop
+                missing it and start serving it. Every day, we wake up to make sure that every single momo that leaves
+                our kitchen is worthy of Delhi's legacy.</p>
+              <p class="ceo-msg">We are still growing, still learning — but our commitment to your taste will never
+                change. Thank you Doha, for the love. 🥟🇮🇳</p>
+              <div class="ceo-sig">
+                <div>
+                  <div class="ceo-sig-txt">Faisal</div>
+                  <div class="ceo-sig-role">founder and CEO</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
         <div class="journey-section rev">
-          <div class="sec-label"><div class="sl"></div><div class="sl-t">Our Journey</div></div>
+          <div class="sec-label">
+            <div class="sl"></div>
+            <div class="sl-t">Our Journey</div>
+          </div>
           <h2 class="sec-h" style="margin-bottom:2.5rem;">From <em>Dream to Doha</em></h2>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-year">The Beginning</div><div class="tl-h">The Dream Was Born in Delhi</div><div class="tl-p">Growing up eating momos on Delhi's streets, the dream of bringing this taste to Qatar started to take shape. Every recipe was tested, tasted and perfected over months.</div></div>
-            <div class="tl-item"><div class="tl-year">Launch Day</div><div class="tl-h">Momowala Opens in Doha</div><div class="tl-p">We opened our doors at 850 Building 76, Unit 4, Doha. The response from day one was overwhelming — queues, excited customers, and momos flying out of the kitchen.</div></div>
-            <div class="tl-item"><div class="tl-year">Growing</div><div class="tl-h">3,600+ Instagram Followers & 55+ Reviews</div><div class="tl-p">The community of momo lovers in Doha grew fast. 4.3 stars on Google, 3,600+ Instagram followers, and a growing reputation for the most authentic Delhi momos in Qatar.</div></div>
-            <div class="tl-item"><div class="tl-year">Future</div><div class="tl-h">Expanding the Delhi Experience</div><div class="tl-p">New space, proper seating, parking, wheelchair access, kids' chairs — we are building a proper home for Delhi street food in Doha. Watch this space. 🥟</div></div>
+            <div class="tl-item">
+              <div class="tl-year">The Beginning</div>
+              <div class="tl-h">The Dream Was Born in Delhi</div>
+              <div class="tl-p">Growing up eating momos on Delhi's streets, the dream of bringing this taste to Qatar
+                started to take shape. Every recipe was tested, tasted and perfected over months.</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-year">Launch Day</div>
+              <div class="tl-h">Momowala Opens in Doha</div>
+              <div class="tl-p">We opened our doors at 850 Building 76, Unit 4, Doha. The response from day one was
+                overwhelming — queues, excited customers, and momos flying out of the kitchen.</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-year">Growing</div>
+              <div class="tl-h">3,600+ Instagram Followers & 55+ Reviews</div>
+              <div class="tl-p">The community of momo lovers in Doha grew fast. 4.3 stars on Google, 3,600+ Instagram
+                followers, and a growing reputation for the most authentic Delhi momos in Qatar.</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-year">Future</div>
+              <div class="tl-h">Expanding the Delhi Experience</div>
+              <div class="tl-p">New space, proper seating, parking, wheelchair access, kids' chairs — we are building a
+                proper home for Delhi street food in Doha. Watch this space. 🥟</div>
+            </div>
           </div>
         </div>
       </div>
@@ -1306,14 +2087,27 @@
       <div class="container">
         <div class="ft-grid">
           <div>
-            <div class="ft-brand-logo"><div class="ft-logo-c"><span>M</span></div></div>
+            <div class="ft-brand-logo">
+              <div class="ft-logo-c"><span>M</span></div>
+            </div>
             <div class="ft-brand-n">Momo<em>wala</em></div>
             <p class="ft-tagline">Bringing the real taste of Delhi straight to the streets of Doha.</p>
           </div>
-          <div class="ft-col"><h4>Hours</h4><p>6:00 PM – 12:00 AM</p><p>Daily</p><div class="ft-open"><div class="open-dot"></div>Open Now</div></div>
-          <div class="ft-col"><h4>Connect</h4><a href="tel:77705150">📞 7770 5150</a><a href="https://www.instagram.com/momowalaqa/" target="_blank">📸 @momowalaqa</a><a href="https://wa.me/97477705150" target="_blank">💬 WhatsApp</a></div>
+          <div class="ft-col">
+            <h4>Hours</h4>
+            <p>6:00 PM – 12:00 AM</p>
+            <p>Daily</p>
+            <div class="ft-open">
+              <div class="open-dot"></div>Open Now
+            </div>
+          </div>
+          <div class="ft-col">
+            <h4>Connect</h4><a href="tel:77705150">📞 7770 5150</a><a href="https://www.instagram.com/momowalaqa/"
+              target="_blank">📸 @momowalaqa</a><a href="https://wa.me/97477705150" target="_blank">💬 WhatsApp</a>
+          </div>
         </div>
-        <div class="ft-bottom"><span>© 2025 Momowala Cafeteria · Doha, Qatar</span><a href="#" onclick="navigate('contact')">Contact Us ↗</a></div>
+        <div class="ft-bottom"><span>© 2025 Momowala Cafeteria · Doha, Qatar</span><a href="#"
+            onclick="navigate('contact')">Contact Us ↗</a></div>
       </div>
     </footer>
   </div>
@@ -1324,7 +2118,11 @@
   <div class="page" id="page-reviews">
     <div class="page-hero">
       <div class="container">
-        <div class="page-hero-label"><div class="sl"></div><div class="sl-t">What Doha Says</div><div class="sl"></div></div>
+        <div class="page-hero-label">
+          <div class="sl"></div>
+          <div class="sl-t">What Doha Says</div>
+          <div class="sl"></div>
+        </div>
         <h1 class="sec-h">Customer <em>Reviews</em></h1>
         <p>Real words from real momo lovers across Doha.</p>
       </div>
@@ -1336,34 +2134,122 @@
           <div class="big-r-right">
             <div class="stars">★★★★☆</div>
             <p>55+ verified Google reviews · Doha, Qatar</p>
-            <div style="margin-top:1rem"><a href="https://maps.app.goo.gl/MomowalaDoha" target="_blank" class="btn-y">Leave a Review ↗</a></div>
+            <div style="margin-top:1rem"><a href="https://maps.app.goo.gl/MomowalaDoha" target="_blank"
+                class="btn-y">Leave a Review ↗</a></div>
           </div>
         </div>
         <h2 class="sec-h rev" style="margin-bottom:2rem;">All <em>Reviews</em></h2>
         <div class="reviews-grid">
-          <div class="rc rev"><div class="rc-guide">Local Guide</div><div class="rc-stars">★★★★★</div><div class="rc-txt">"Finally visited Momo Wala — tried kurkure momo with chicken and it was very tasty! Good service, keep up the same taste."</div><div class="rc-author">Muhammad Mohsin</div><div class="rc-meta">Local Guide · 20 reviews · 135 photos · 1 month ago</div></div>
-          <div class="rc rev" style="transition-delay:.05s"><div class="rc-stars">★★★★★</div><div class="rc-txt">"10/10 taste! The tandoori momos were amazing, super flavorful and nicely spicy. Loved it. The lady at the counter was very sweet and polite."</div><div class="rc-author">Naureen Raza</div><div class="rc-meta">Local Guide · 3 weeks ago</div></div>
-          <div class="rc rev" style="transition-delay:.1s"><div class="rc-stars">★★★★★</div><div class="rc-txt">"Awesome momos! Specially tandoori and afghani — worth having it. Really tasty and something different I haven't tried before. Super super delicious!"</div><div class="rc-author">Mehrosh Hurzuk</div><div class="rc-meta">1 month ago</div></div>
-          <div class="rc rev" style="transition-delay:.15s"><div class="rc-stars">★★★★★</div><div class="rc-txt">"Tried their steam chicken momo and the first bite with red chutney took me back to Delhi."</div><div class="rc-author">Atif Qureshi</div><div class="rc-meta">1 month ago</div></div>
-          <div class="rc rev" style="transition-delay:.2s"><div class="rc-guide">Local Guide</div><div class="rc-stars">★★★★★</div><div class="rc-txt">"If you are craving for authentic Delhi momo, this is exactly the place."</div><div class="rc-author">Shashank Nathani</div><div class="rc-meta">Local Guide · 10 reviews · 1 month ago</div></div>
-          <div class="rc rev" style="transition-delay:.25s"><div class="rc-stars">★★★★★</div><div class="rc-txt">"Amazing place, amazing service and great food. Keep it up guys!"</div><div class="rc-author">Sushil Lokhande</div><div class="rc-meta">3 weeks ago</div></div>
-          <div class="rc rev" style="transition-delay:.3s"><div class="rc-stars">★★★★★</div><div class="rc-txt">"Cold coffee is so good I like it highly recommended. Absolutely amazing."</div><div class="rc-author">Zohaib Younas</div><div class="rc-meta">3 weeks ago</div></div>
-          <div class="rc rev" style="transition-delay:.35s"><div class="rc-stars">★★★★★</div><div class="rc-txt">"As expected! You can try the best afghani momo and many more — their cheesecake shake is wooow!"</div><div class="rc-author">Kritika Sharma</div><div class="rc-meta">2 months ago</div></div>
-          <div class="rc rev" style="transition-delay:.4s"><div class="rc-stars">★★★★☆</div><div class="rc-txt">"Tried their chicken fried momos and they were excellent. The masala on top was a game changer."</div><div class="rc-author">Fahad Shaikh</div><div class="rc-meta">1 month ago</div></div>
-          <div class="rc rev" style="transition-delay:.45s"><div class="rc-stars">★★★★★</div><div class="rc-txt">"Fantastic experience at Momowala. Service was top-notch, and staff was incredibly helpful."</div><div class="rc-author">Shubhangi Avhad</div><div class="rc-meta">3 weeks ago</div></div>
-          <div class="rc rev" style="transition-delay:.5s"><div class="rc-stars">★★★★★</div><div class="rc-txt">"Amazing Momos — amazing quality, great taste. Highly recommended for anyone in Doha."</div><div class="rc-author">Tina Lewis</div><div class="rc-meta">Local Guide · 2 weeks ago</div></div>
-          <div class="rc rev" style="transition-delay:.55s"><div class="rc-stars">★★★★★</div><div class="rc-txt">"I loved the momos they were delicious! Will definitely be coming back again and again."</div><div class="rc-author">Rupa Rana</div><div class="rc-meta">3 weeks ago</div></div>
+          <div class="rc rev">
+            <div class="rc-guide">Local Guide</div>
+            <div class="rc-stars">★★★★★</div>
+            <div class="rc-txt">"Finally visited Momo Wala — tried kurkure momo with chicken and it was very tasty! Good
+              service, keep up the same taste."</div>
+            <div class="rc-author">Muhammad Mohsin</div>
+            <div class="rc-meta">Local Guide · 20 reviews · 135 photos · 1 month ago</div>
+          </div>
+          <div class="rc rev" style="transition-delay:.05s">
+            <div class="rc-stars">★★★★★</div>
+            <div class="rc-txt">"10/10 taste! The tandoori momos were amazing, super flavorful and nicely spicy. Loved
+              it. The lady at the counter was very sweet and polite."</div>
+            <div class="rc-author">Naureen Raza</div>
+            <div class="rc-meta">Local Guide · 3 weeks ago</div>
+          </div>
+          <div class="rc rev" style="transition-delay:.1s">
+            <div class="rc-stars">★★★★★</div>
+            <div class="rc-txt">"Awesome momos! Specially tandoori and afghani — worth having it. Really tasty and
+              something different I haven't tried before. Super super delicious!"</div>
+            <div class="rc-author">Mehrosh Hurzuk</div>
+            <div class="rc-meta">1 month ago</div>
+          </div>
+          <div class="rc rev" style="transition-delay:.15s">
+            <div class="rc-stars">★★★★★</div>
+            <div class="rc-txt">"Tried their steam chicken momo and the first bite with red chutney took me back to
+              Delhi."</div>
+            <div class="rc-author">Atif Qureshi</div>
+            <div class="rc-meta">1 month ago</div>
+          </div>
+          <div class="rc rev" style="transition-delay:.2s">
+            <div class="rc-guide">Local Guide</div>
+            <div class="rc-stars">★★★★★</div>
+            <div class="rc-txt">"If you are craving for authentic Delhi momo, this is exactly the place."</div>
+            <div class="rc-author">Shashank Nathani</div>
+            <div class="rc-meta">Local Guide · 10 reviews · 1 month ago</div>
+          </div>
+          <div class="rc rev" style="transition-delay:.25s">
+            <div class="rc-stars">★★★★★</div>
+            <div class="rc-txt">"Amazing place, amazing service and great food. Keep it up guys!"</div>
+            <div class="rc-author">Sushil Lokhande</div>
+            <div class="rc-meta">3 weeks ago</div>
+          </div>
+          <div class="rc rev" style="transition-delay:.3s">
+            <div class="rc-stars">★★★★★</div>
+            <div class="rc-txt">"Cold coffee is so good I like it highly recommended. Absolutely amazing."</div>
+            <div class="rc-author">Zohaib Younas</div>
+            <div class="rc-meta">3 weeks ago</div>
+          </div>
+          <div class="rc rev" style="transition-delay:.35s">
+            <div class="rc-stars">★★★★★</div>
+            <div class="rc-txt">"As expected! You can try the best afghani momo and many more — their cheesecake shake
+              is wooow!"</div>
+            <div class="rc-author">Kritika Sharma</div>
+            <div class="rc-meta">2 months ago</div>
+          </div>
+          <div class="rc rev" style="transition-delay:.4s">
+            <div class="rc-stars">★★★★☆</div>
+            <div class="rc-txt">"Tried their chicken fried momos and they were excellent. The masala on top was a game
+              changer."</div>
+            <div class="rc-author">Fahad Shaikh</div>
+            <div class="rc-meta">1 month ago</div>
+          </div>
+          <div class="rc rev" style="transition-delay:.45s">
+            <div class="rc-stars">★★★★★</div>
+            <div class="rc-txt">"Fantastic experience at Momowala. Service was top-notch, and staff was incredibly
+              helpful."</div>
+            <div class="rc-author">Shubhangi Avhad</div>
+            <div class="rc-meta">3 weeks ago</div>
+          </div>
+          <div class="rc rev" style="transition-delay:.5s">
+            <div class="rc-stars">★★★★★</div>
+            <div class="rc-txt">"Amazing Momos — amazing quality, great taste. Highly recommended for anyone in Doha."
+            </div>
+            <div class="rc-author">Tina Lewis</div>
+            <div class="rc-meta">Local Guide · 2 weeks ago</div>
+          </div>
+          <div class="rc rev" style="transition-delay:.55s">
+            <div class="rc-stars">★★★★★</div>
+            <div class="rc-txt">"I loved the momos they were delicious! Will definitely be coming back again and again."
+            </div>
+            <div class="rc-author">Rupa Rana</div>
+            <div class="rc-meta">3 weeks ago</div>
+          </div>
         </div>
       </div>
     </div>
     <footer>
       <div class="container">
         <div class="ft-grid">
-          <div><div class="ft-brand-logo"><div class="ft-logo-c"><span>M</span></div></div><div class="ft-brand-n">Momo<em>wala</em></div><p class="ft-tagline">Bringing the real taste of Delhi straight to Doha.</p></div>
-          <div class="ft-col"><h4>Hours</h4><p>6:00 PM – 12:00 AM</p><div class="ft-open"><div class="open-dot"></div>Open Now</div></div>
-          <div class="ft-col"><h4>Connect</h4><a href="tel:77705150">📞 7770 5150</a><a href="https://www.instagram.com/momowalaqa/" target="_blank">📸 @momowalaqa</a></div>
+          <div>
+            <div class="ft-brand-logo">
+              <div class="ft-logo-c"><span>M</span></div>
+            </div>
+            <div class="ft-brand-n">Momo<em>wala</em></div>
+            <p class="ft-tagline">Bringing the real taste of Delhi straight to Doha.</p>
+          </div>
+          <div class="ft-col">
+            <h4>Hours</h4>
+            <p>6:00 PM – 12:00 AM</p>
+            <div class="ft-open">
+              <div class="open-dot"></div>Open Now
+            </div>
+          </div>
+          <div class="ft-col">
+            <h4>Connect</h4><a href="tel:77705150">📞 7770 5150</a><a href="https://www.instagram.com/momowalaqa/"
+              target="_blank">📸 @momowalaqa</a>
+          </div>
         </div>
-        <div class="ft-bottom"><span>© 2025 Momowala Cafeteria</span><a href="https://maps.app.goo.gl/MomowalaDoha" target="_blank">Leave a Review ↗</a></div>
+        <div class="ft-bottom"><span>© 2025 Momowala Cafeteria</span><a href="https://maps.app.goo.gl/MomowalaDoha"
+            target="_blank">Leave a Review ↗</a></div>
       </div>
     </footer>
   </div>
@@ -1374,7 +2260,11 @@
   <div class="page" id="page-contact">
     <div class="page-hero">
       <div class="container">
-        <div class="page-hero-label"><div class="sl"></div><div class="sl-t">Get in Touch</div><div class="sl"></div></div>
+        <div class="page-hero-label">
+          <div class="sl"></div>
+          <div class="sl-t">Get in Touch</div>
+          <div class="sl"></div>
+        </div>
         <h1 class="sec-h">Contact <em>Us</em></h1>
         <p>Have a question, a craving, or want to place a bulk order? We're here.</p>
       </div>
@@ -1383,30 +2273,82 @@
       <div class="container">
         <div class="contact-grid">
           <div class="contact-info rev-l">
-            <div class="sec-label"><div class="sl"></div><div class="sl-t">Find Us</div></div>
+            <div class="sec-label">
+              <div class="sl"></div>
+              <div class="sl-t">Find Us</div>
+            </div>
             <h2 class="sec-h" style="margin-bottom:1rem;">Visit <em>Momowala</em></h2>
-            <p>Come taste the real Delhi experience. We're open every evening, ready to serve you the finest momos in Doha.</p>
+            <p>Come taste the real Delhi experience. We're open every evening, ready to serve you the finest momos in
+              Doha.</p>
             <div class="c-cards">
-              <div class="c-card"><div class="c-card-icon">📍</div><div><div class="c-card-lbl">Address</div><div class="c-card-val">850 Building 76 Area, 24 Unit 4<br>Doha, Qatar</div></div></div>
-              <div class="c-card"><div class="c-card-icon">📞</div><div><div class="c-card-lbl">Phone</div><div class="c-card-val"><a href="tel:77705150">7770 5150</a></div></div></div>
-              <div class="c-card"><div class="c-card-icon">🕐</div><div><div class="c-card-lbl">Hours</div><div class="c-card-val">6:00 PM – 12:00 AM · Daily<div class="hours-open"><div class="open-dot"></div>Open Now</div></div></div></div>
-              <div class="c-card"><div class="c-card-icon">📸</div><div><div class="c-card-lbl">Instagram</div><div class="c-card-val"><a href="https://www.instagram.com/momowalaqa/" target="_blank">@momowalaqa</a> · 3,601 followers</div></div></div>
-              <div class="c-card"><div class="c-card-icon">💬</div><div><div class="c-card-lbl">WhatsApp</div><div class="c-card-val"><a href="https://wa.me/97477705150" target="_blank">Chat with us: +974 7770 5150</a></div></div></div>
-              <div class="c-card"><div class="c-card-icon">💰</div><div><div class="c-card-lbl">Price Range</div><div class="c-card-val">QAR 1 – 50 per person</div></div></div>
+              <div class="c-card">
+                <div class="c-card-icon">📍</div>
+                <div>
+                  <div class="c-card-lbl">Address</div>
+                  <div class="c-card-val">850 Building 76 Area, 24 Unit 4<br>Doha, Qatar</div>
+                </div>
+              </div>
+              <div class="c-card">
+                <div class="c-card-icon">📞</div>
+                <div>
+                  <div class="c-card-lbl">Phone</div>
+                  <div class="c-card-val"><a href="tel:77705150">7770 5150</a></div>
+                </div>
+              </div>
+              <div class="c-card">
+                <div class="c-card-icon">🕐</div>
+                <div>
+                  <div class="c-card-lbl">Hours</div>
+                  <div class="c-card-val">6:00 PM – 12:00 AM · Daily<div class="hours-open">
+                      <div class="open-dot"></div>Open Now
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="c-card">
+                <div class="c-card-icon">📸</div>
+                <div>
+                  <div class="c-card-lbl">Instagram</div>
+                  <div class="c-card-val"><a href="https://www.instagram.com/momowalaqa/"
+                      target="_blank">@momowalaqa</a> · 3,601 followers</div>
+                </div>
+              </div>
+              <div class="c-card">
+                <div class="c-card-icon">💬</div>
+                <div>
+                  <div class="c-card-lbl">WhatsApp</div>
+                  <div class="c-card-val"><a href="https://wa.me/97477705150" target="_blank">Chat with us: +974 7770
+                      5150</a></div>
+                </div>
+              </div>
+              <div class="c-card">
+                <div class="c-card-icon">💰</div>
+                <div>
+                  <div class="c-card-lbl">Price Range</div>
+                  <div class="c-card-val">QAR 1 – 50 per person</div>
+                </div>
+              </div>
             </div>
             <div class="map-wrap">
-              <iframe src="https://maps.google.com/maps?q=Momowala+Doha+Qatar&output=embed&z=15" allowfullscreen="" loading="lazy"></iframe>
+              <iframe src="https://maps.google.com/maps?q=Momowala+Doha+Qatar&output=embed&z=15" allowfullscreen=""
+                loading="lazy"></iframe>
             </div>
           </div>
           <div class="contact-form-area rev-r">
-            <div class="sec-label"><div class="sl"></div><div class="sl-t">Send a Message</div></div>
+            <div class="sec-label">
+              <div class="sl"></div>
+              <div class="sl-t">Send a Message</div>
+            </div>
             <h2 class="sec-h" style="margin-bottom:.5rem;">Say <em>Hello</em></h2>
             <p class="form-intro">Questions, special requests, catering enquiries — we'd love to hear from you.</p>
             <div class="f-row">
-              <div class="fg"><label class="fl">Your Name</label><input class="fi" type="text" placeholder="Ahmed Al-Rashid"></div>
-              <div class="fg"><label class="fl">Phone / WhatsApp</label><input class="fi" type="tel" placeholder="+974 XXXX XXXX"></div>
+              <div class="fg"><label class="fl">Your Name</label><input class="fi" type="text"
+                  placeholder="Ahmed Al-Rashid"></div>
+              <div class="fg"><label class="fl">Phone / WhatsApp</label><input class="fi" type="tel"
+                  placeholder="+974 XXXX XXXX"></div>
             </div>
-            <div class="fg"><label class="fl">Email</label><input class="fi" type="email" placeholder="your@email.com"></div>
+            <div class="fg"><label class="fl">Email</label><input class="fi" type="email" placeholder="your@email.com">
+            </div>
             <div class="fg">
               <label class="fl">What are you craving?</label>
               <select class="fsel">
@@ -1420,7 +2362,8 @@
                 <option>General Enquiry</option>
               </select>
             </div>
-            <div class="fg"><label class="fl">Message</label><textarea class="fta" placeholder="Tell us anything — special requests, events, feedback..."></textarea></div>
+            <div class="fg"><label class="fl">Message</label><textarea class="fta"
+                placeholder="Tell us anything — special requests, events, feedback..."></textarea></div>
             <button class="f-submit" onclick="
               this.textContent='Message Sent! We\'ll WhatsApp you soon 🥟';
               this.style.background='#2E7D32';this.style.color='white';
@@ -1433,9 +2376,24 @@
     <footer>
       <div class="container">
         <div class="ft-grid">
-          <div><div class="ft-brand-logo"><div class="ft-logo-c"><span>M</span></div></div><div class="ft-brand-n">Momo<em>wala</em></div><p class="ft-tagline">Bringing the real taste of Delhi straight to Doha.</p></div>
-          <div class="ft-col"><h4>Hours</h4><p>6:00 PM – 12:00 AM</p><div class="ft-open"><div class="open-dot"></div>Open Now</div></div>
-          <div class="ft-col"><h4>Connect</h4><a href="tel:77705150">📞 7770 5150</a><a href="https://www.instagram.com/momowalaqa/" target="_blank">📸 @momowalaqa</a></div>
+          <div>
+            <div class="ft-brand-logo">
+              <div class="ft-logo-c"><span>M</span></div>
+            </div>
+            <div class="ft-brand-n">Momo<em>wala</em></div>
+            <p class="ft-tagline">Bringing the real taste of Delhi straight to Doha.</p>
+          </div>
+          <div class="ft-col">
+            <h4>Hours</h4>
+            <p>6:00 PM – 12:00 AM</p>
+            <div class="ft-open">
+              <div class="open-dot"></div>Open Now
+            </div>
+          </div>
+          <div class="ft-col">
+            <h4>Connect</h4><a href="tel:77705150">📞 7770 5150</a><a href="https://www.instagram.com/momowalaqa/"
+              target="_blank">📸 @momowalaqa</a>
+          </div>
         </div>
         <div class="ft-bottom"><span>© 2025 Momowala Cafeteria</span></div>
       </div>
@@ -1468,7 +2426,10 @@
             📞 Call to Order
           </button>
           <a class="mm-btn-wa" href="https://wa.me/97477705150" target="_blank">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+            </svg>
             WhatsApp
           </a>
         </div>
@@ -1554,50 +2515,50 @@
        FULL MENU DATA
     ══════════════════════════════════════ */
     const menuData = {
-      afghani:        { cat:'🥟 Momos',      name:'Afghani Momos',       sub:'Creamy Smoky Momos',       img:'https://images.pexels.com/photos/2347311/pexels-photo-2347311.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Rich, creamy Afghani marinade coats every momo before they are grilled to perfection. A bold, smoky flavour profile loved by regulars.', chicken:'20 QAR', veg:'20 QAR', hl:[{i:'🧄',t:'Creamy Afghani sauce'},{i:'🔥',t:'Grilled to order'},{i:'🥣',t:'With mint chutney'},{i:'💛',t:'Rich & indulgent'}] },
-      tandoori:       { cat:'🥟 Momos',      name:'Tandoori Momos',      sub:'Smoky Tandoor Flavor',     img:'https://images.pexels.com/photos/4958641/pexels-photo-4958641.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Our signature momos kissed by the tandoor — smoky, charred outside, juicy and spiced inside. Served with our house-made red chutney.', chicken:'20 QAR', veg:'20 QAR', hl:[{i:'🔥',t:'Char-grilled tandoor'},{i:'🌶️',t:'Delhi spice marinade'},{i:'🥣',t:'With red chutney'},{i:'⭐',t:'Best Seller'}] },
-      steam:          { cat:'🥟 Momos',      name:'Steam Momos',         sub:'Soft Juicy Momos',         img:'https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=900',   desc:'The OG. Perfectly steamed, pillowy-soft dumplings filled with fresh ingredients. Served with our fiery red chutney.', chicken:'12 QAR', veg:'10 QAR', hl:[{i:'🫧',t:'Gently steamed'},{i:'🌶️',t:'Red chutney'},{i:'🇮🇳',t:'Original Delhi recipe'},{i:'💧',t:'Light & healthy'}] },
-      fried:          { cat:'🥟 Momos',      name:'Fried Momos',         sub:'Golden Crispy Momos',      img:'https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Deep fried to golden crispy perfection with a satisfying crunch in every bite. Served hot with our signature dipping sauces.', chicken:'15 QAR', veg:'15 QAR', hl:[{i:'🟡',t:'Golden crispy'},{i:'🔥',t:'Deep fried'},{i:'🥣',t:'With dipping sauce'},{i:'⚡',t:'Super crunchy'}] },
-      cheesecorn:     { cat:'🥟 Momos',      name:'Cheese Corn Momos',   sub:'Cheesy Corn Delight',      img:'https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'A unique creation filled with cheesy corn goodness. Gooey, rich, and utterly addictive — chicken only.', chicken:'18 QAR', veg:null, hl:[{i:'🧀',t:'Melted cheese'},{i:'🌽',t:'Sweet corn'},{i:'✨',t:'Unique to Momowala'},{i:'🐔',t:'Chicken only'}] },
-      bakedcheese:    { cat:'🥟 Momos',      name:'Baked Cheese Momos',  sub:'Oven Melted Cheese',       img:'https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Momos baked to golden perfection and loaded with oven-melted cheese. A rich, indulgent experience unlike anything else.', chicken:'20 QAR', veg:'20 QAR', hl:[{i:'🧀',t:'Oven melted cheese'},{i:'🔥',t:'Baked not fried'},{i:'✨',t:'Exclusive item'},{i:'😍',t:'Fan favourite'}] },
-      whitesauce:     { cat:'🍝 Pasta',      name:'White Sauce Pasta',   sub:'Creamy White Pasta',       img:'https://images.pexels.com/photos/1487511/pexels-photo-1487511.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Rich and velvety white béchamel sauce tossed with perfectly cooked pasta. Creamy, comforting and absolutely satisfying.', single:'23 QAR', hl:[{i:'🧈',t:'Creamy béchamel'},{i:'🍝',t:'Al dente pasta'},{i:'🧀',t:'Topped with cheese'},{i:'🌿',t:'Fresh herbs'}] },
-      redsauce:       { cat:'🍝 Pasta',      name:'Red Sauce Pasta',     sub:'Tangy Tomato Pasta',       img:'https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Tangy, rich tomato sauce slow-cooked with Delhi-style spices. Bold and flavourful — a classic done right.', single:'20 QAR', hl:[{i:'🍅',t:'Rich tomato base'},{i:'🌶️',t:'Delhi spices'},{i:'🍝',t:'Al dente pasta'},{i:'🌿',t:'Fresh herbs'}] },
-      bakedpasta:     { cat:'🍝 Pasta',      name:'Baked Pasta',         sub:'Cheesy Baked Pasta',       img:'https://images.pexels.com/photos/1487511/pexels-photo-1487511.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Pasta baked to bubbly, golden perfection under a thick layer of melted cheese. The ultimate comfort food indulgence.', single:'25 QAR', hl:[{i:'🧀',t:'Melted cheese top'},{i:'🔥',t:'Oven baked'},{i:'⭐',t:'Popular choice'},{i:'😍',t:'Fan favourite'}] },
-      maggicheese:    { cat:'🍜 Maggi',      name:'Cheese Corn Maggi',   sub:'Cheesy Corn Maggi',        img:'https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Classic Maggi noodles loaded with sweet corn and gooey melted cheese. A quick, satisfying snack bursting with flavour.', single:'15 QAR', hl:[{i:'🧀',t:'Melted cheese'},{i:'🌽',t:'Sweet corn'},{i:'🍜',t:'Masala Maggi base'},{i:'⚡',t:'Quick & tasty'}] },
-      maggimasala:    { cat:'🍜 Maggi',      name:'Masala Maggi',        sub:'Classic Masala Maggi',     img:'https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'The timeless classic — Maggi noodles cooked in our special masala blend. Simple, nostalgic and deeply satisfying.', single:'12 QAR', hl:[{i:'🌶️',t:'Special masala'},{i:'🍜',t:'Classic Maggi'},{i:'🇮🇳',t:'Desi style'},{i:'💛',t:'Comfort food'}] },
-      maggifarm:      { cat:'🍜 Maggi',      name:'Farm Fresh Maggi',    sub:'Fresh Veggie Maggi',       img:'https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Maggi tossed with fresh garden vegetables for a wholesome, colourful meal. Light, nutritious and delicious.', single:'15 QAR', hl:[{i:'🥦',t:'Fresh veggies'},{i:'🌿',t:'Garden fresh'},{i:'🍜',t:'Masala noodles'},{i:'💚',t:'Wholesome'}] },
-      maggichicken:   { cat:'🍜 Maggi',      name:'Chicken Maggi',       sub:'Savory Chicken Maggi',     img:'https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Tender chicken pieces cooked into spiced Maggi noodles for a hearty, protein-packed meal. A must-try for meat lovers.', single:'18 QAR', hl:[{i:'🐔',t:'Fresh chicken'},{i:'🌶️',t:'Spiced broth'},{i:'🍜',t:'Hearty noodles'},{i:'⭐',t:'Must Try'}] },
-      zinger:         { cat:'🍔 Burgers',    name:'Zinger Burger',       sub:'Crispy Chicken Burger',    img:'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'A crispy, golden fried chicken fillet stacked in a toasted bun with fresh lettuce and our special zinger sauce.', single:'15 QAR', hl:[{i:'🐔',t:'Crispy chicken'},{i:'🌶️',t:'Zinger sauce'},{i:'🥬',t:'Fresh lettuce'},{i:'⭐',t:'Popular'}] },
-      momoburgr:      { cat:'🍔 Burgers',    name:'Momo Burger',         sub:'Spicy Fusion Burger',      img:'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'A Delhi-Doha fusion masterpiece — momo-spiced chicken patty in a toasted bun. Unique, bold and utterly delicious.', single:'15 QAR', hl:[{i:'🥟',t:'Momo-spiced patty'},{i:'🌶️',t:'Fusion flavours'},{i:'✨',t:'Unique creation'},{i:'🤤',t:'Crowd favourite'}] },
-      cheesyburg:     { cat:'🍔 Burgers',    name:'Cheesy Burger',       sub:'Loaded Cheese Burger',     img:'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Loaded with layers of melted cheese over a juicy chicken patty. For serious cheese lovers only.', single:'18 QAR', hl:[{i:'🧀',t:'Double cheese'},{i:'🐔',t:'Juicy patty'},{i:'🔥',t:'Grilled'},{i:'😍',t:'Indulgent'}] },
-      highfries:      { cat:'🍔 Burgers',    name:'High & Fries Burger', sub:'Veggie Delight Burger',    img:'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'A veggie delight burger packed with fresh ingredients and served with crispy fries on the side. Light yet satisfying.', single:'15 QAR', hl:[{i:'🥦',t:'Veggie patty'},{i:'🍟',t:'Comes with fries'},{i:'🌿',t:'Fresh ingredients'},{i:'💚',t:'Veggie friendly'}] },
-      chessy:         { cat:'🍟 Fries',      name:'Chessy Fries',        sub:'Loaded Cheese Fries',      img:'https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Golden crispy fries smothered in a generous pour of rich, gooey melted cheese. The ultimate snack for cheese lovers.', single:'15 QAR', hl:[{i:'🧀',t:'Loaded cheese'},{i:'🟡',t:'Golden crispy'},{i:'⭐',t:'Best Seller'},{i:'🤤',t:'Irresistible'}] },
-      salted:         { cat:'🍟 Fries',      name:'Salted Fries',        sub:'Classic Salted Fries',     img:'https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Classic, perfectly salted golden fries. Simple, crispy and absolutely delicious. The go-to side for everything.', single:'8 QAR',  hl:[{i:'🟡',t:'Golden crispy'},{i:'🧂',t:'Perfectly salted'},{i:'💰',t:'Great value'},{i:'🍟',t:'Classic cut'}] },
-      chicfries:      { cat:'🍟 Fries',      name:'Chicken Fries',       sub:'Chicken Loaded Fries',     img:'https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Crispy fries topped with tender spiced chicken pieces and our signature sauces. A full meal in a box.', single:'18 QAR', hl:[{i:'🐔',t:'Tender chicken'},{i:'🟡',t:'Crispy fries'},{i:'🌶️',t:'Spiced sauces'},{i:'😋',t:'Hearty serving'}] },
-      periperi:       { cat:'🍟 Fries',      name:'Peri Peri Fries',     sub:'Spicy Peri Fries',         img:'https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Golden fries dusted with fiery peri peri spice seasoning. Bold, spicy and seriously addictive.', single:'12 QAR', hl:[{i:'🌶️',t:'Peri peri spice'},{i:'🔥',t:'Fiery hot'},{i:'🟡',t:'Crispy fries'},{i:'⚡',t:'Addictive'}] },
-      degree:         { cat:'🥪 Sandwich',   name:'Degree Sandwich',     sub:'Grilled Beef Sandwich',    img:'https://images.pexels.com/photos/1647163/pexels-photo-1647163.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'A satisfying grilled beef sandwich pressed to golden perfection with fresh toppings and our special sauce.', single:'10 QAR', hl:[{i:'🥩',t:'Grilled beef'},{i:'🔥',t:'Pressed & grilled'},{i:'💰',t:'Great value'},{i:'🥪',t:'Classic style'}] },
-      sandcheese:     { cat:'🥪 Sandwich',   name:'Cheese Corn Sandwich',sub:'Cheesy Corn Sandwich',     img:'https://images.pexels.com/photos/1647163/pexels-photo-1647163.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Sweet corn and melted cheese packed inside a toasted sandwich. A comforting, gooey, cheesy delight.', single:'15 QAR', hl:[{i:'🧀',t:'Melted cheese'},{i:'🌽',t:'Sweet corn'},{i:'🔥',t:'Toasted bread'},{i:'⭐',t:'Popular'}] },
-      sandveg:        { cat:'🥪 Sandwich',   name:'Vegetable Sandwich',  sub:'Fresh Veggie Sandwich',    img:'https://images.pexels.com/photos/1647163/pexels-photo-1647163.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Loaded with fresh, crunchy vegetables and grilled to perfection. Light, healthy and incredibly tasty.', single:'15 QAR', hl:[{i:'🥦',t:'Fresh veggies'},{i:'🌿',t:'Garden fresh'},{i:'🔥',t:'Grilled'},{i:'💚',t:'Healthy choice'}] },
-      sandchilli:     { cat:'🥪 Sandwich',   name:'Chilli Sandwich',     sub:'Spicy Chili Sandwich',     img:'https://images.pexels.com/photos/1647163/pexels-photo-1647163.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Packed with spicy chilli filling and bold flavours. For those who like their food with a serious kick.', single:'15 QAR', hl:[{i:'🌶️',t:'Spicy chilli'},{i:'🔥',t:'Bold flavours'},{i:'⚡',t:'Hot & fiery'},{i:'😤',t:'For spice lovers'}] },
-      lassiregular:   { cat:'🥛 Lassi',      name:'Regular Lassi',       sub:'Classic Yogurt Lassi',     img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Classic creamy yogurt lassi — chilled, refreshing and perfectly balanced. The ultimate Indian cooler.', single:'10 QAR', hl:[{i:'🥛',t:'Fresh yogurt'},{i:'🧊',t:'Ice cold'},{i:'🇮🇳',t:'Indian classic'},{i:'💰',t:'Great value'}] },
-      lassimango:     { cat:'🥛 Lassi',      name:'Mango Lassi',         sub:'Sweet Mango Lassi',        img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Luscious mango pulp blended with creamy yogurt for a thick, sweet and tropical treat.', single:'15 QAR', hl:[{i:'🥭',t:'Real mango pulp'},{i:'🥛',t:'Creamy yogurt'},{i:'⭐',t:'Customer favourite'},{i:'🌞',t:'Tropical vibes'}] },
-      lassistrawberry:{ cat:'🥛 Lassi',      name:'Strawberry Lassi',    sub:'Berry Sweet Lassi',        img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Fresh strawberry flavour swirled into chilled creamy yogurt. Sweet, tangy and absolutely refreshing.', single:'15 QAR', hl:[{i:'🍓',t:'Fresh strawberry'},{i:'🥛',t:'Creamy yogurt'},{i:'🌸',t:'Berry sweet'},{i:'🧊',t:'Ice cold'}] },
-      lassijeera:     { cat:'🥛 Lassi',      name:'Jeera Lassi',         sub:'Spiced Cumin Lassi',       img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'A savory, spiced cumin lassi — tangy, cooling and deeply satisfying. The traditional Indian way to beat the heat.', single:'15 QAR', hl:[{i:'🌿',t:'Roasted jeera'},{i:'🥛',t:'Tangy yogurt'},{i:'🇮🇳',t:'Traditional desi'},{i:'❄️',t:'Cooling'}] },
-      mojito:         { cat:'🥛 Lassi',      name:'Mojito',              sub:'Fresh Mint Mojito',        img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'A refreshing mint mojito bursting with citrus and freshness. Available in any flavour.', single:'12 QAR', hl:[{i:'🍃',t:'Fresh mint'},{i:'🍋',t:'Citrus twist'},{i:'⚡',t:'Any flavour'},{i:'🧊',t:'Ice cold'}] },
-      watermelon:     { cat:'🍹 Juice',      name:'Watermelon Juice',    sub:'Fresh Watermelon Juice',   img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Pure, freshly pressed watermelon juice. Sweet, hydrating and perfectly chilled — summer in a glass.', single:'12 QAR', hl:[{i:'🍉',t:'Fresh watermelon'},{i:'💧',t:'Hydrating'},{i:'🧊',t:'Ice cold'},{i:'🌞',t:'Refreshing'}] },
-      strawberryjuice:{ cat:'🍹 Juice',      name:'Strawberry Juice',    sub:'Fresh Strawberry Juice',   img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Freshly blended strawberry juice — vibrant, tangy and naturally sweet.', single:'12 QAR', hl:[{i:'🍓',t:'Fresh strawberries'},{i:'🌸',t:'Naturally sweet'},{i:'💚',t:'Vitamins'},{i:'🧊',t:'Ice cold'}] },
-      bananajuice:    { cat:'🍹 Juice',      name:'Banana Juice',        sub:'Creamy Banana Juice',      img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Thick, creamy banana juice packed with natural sweetness and energy.', single:'12 QAR', hl:[{i:'🍌',t:'Fresh banana'},{i:'🥛',t:'Creamy blend'},{i:'⚡',t:'Energy boost'},{i:'💛',t:'Naturally sweet'}] },
-      mangojuice:     { cat:'🍹 Juice',      name:'Mango Juice',         sub:'Sweet Mango Juice',        img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Thick, tropical mango juice made from sweet ripe mangoes. Bold, fruity and impossible to resist.', single:'12 QAR', hl:[{i:'🥭',t:'Ripe mangoes'},{i:'🌞',t:'Tropical'},{i:'⭐',t:'Popular'},{i:'🔥',t:'Sweet & bold'}] },
-      avocadojuice:   { cat:'🍹 Juice',      name:'Avocado Juice',       sub:'Creamy Avocado Juice',     img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Smooth and creamy avocado blended into a rich, nourishing juice. Healthy, filling and uniquely delicious.', single:'15 QAR', hl:[{i:'🥑',t:'Fresh avocado'},{i:'💚',t:'Nutrient-rich'},{i:'🥛',t:'Creamy blend'},{i:'✨',t:'Unique choice'}] },
-      lemonmint:      { cat:'🍹 Juice',      name:'Lemon Mint',          sub:'Refreshing Mint Lemon',    img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Zesty lemon juice infused with fresh mint leaves. Light, tangy and incredibly refreshing.', single:'10 QAR', hl:[{i:'🍋',t:'Fresh lemon'},{i:'🍃',t:'Mint leaves'},{i:'💰',t:'Great value'},{i:'❄️',t:'Super refreshing'}] },
-      cocktail:       { cat:'🍹 Juice',      name:'Cocktail Juice',      sub:'Mixed Fruit Juice',        img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'A vibrant medley of mixed fruits blended together for a fruity, colourful and totally unique experience.', single:'15 QAR', hl:[{i:'🍹',t:'Mixed fruits'},{i:'🌈',t:'Colourful blend'},{i:'🎉',t:'Fun & fruity'},{i:'✨',t:'Seasonal mix'}] },
-      chocolate:      { cat:'🥤 Milkshakes', name:'Chocolate Shake',     sub:'Rich Chocolate Shake',     img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'A thick, rich chocolate milkshake made with real cocoa. Deep, indulgent and utterly satisfying.', single:'15 QAR', hl:[{i:'🍫',t:'Real cocoa'},{i:'🥛',t:'Creamy milk'},{i:'😍',t:'Indulgent'},{i:'🧊',t:'Ice cold'}] },
-      banana:         { cat:'🥤 Milkshakes', name:'Banana Shake',        sub:'Creamy Banana Shake',      img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Thick and creamy banana milkshake blended with chilled milk. Naturally sweet, filling and delicious.', single:'15 QAR', hl:[{i:'🍌',t:'Fresh banana'},{i:'🥛',t:'Creamy milk'},{i:'⚡',t:'Energy packed'},{i:'💛',t:'Naturally sweet'}] },
-      strawberrys:    { cat:'🥤 Milkshakes', name:'Strawberry Shake',    sub:'Sweet Strawberry Shake',   img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'A gorgeous pink strawberry milkshake bursting with fresh berry flavour. Sweet, tangy and beautiful.', single:'15 QAR', hl:[{i:'🍓',t:'Fresh strawberry'},{i:'🌸',t:'Berry flavour'},{i:'🥛',t:'Creamy milk'},{i:'💗',t:'Pretty in pink'}] },
-      mangos:         { cat:'🥤 Milkshakes', name:'Mango Shake',         sub:'Tropical Mango Shake',     img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Thick tropical mango shake bursting with ripe mango goodness. Bold, fruity and impossible to put down.', single:'18 QAR', hl:[{i:'🥭',t:'Ripe mango'},{i:'🌞',t:'Tropical vibes'},{i:'🥛',t:'Thick & creamy'},{i:'⭐',t:'Popular'}] },
-      cheesecakes:    { cat:'🥤 Milkshakes', name:'Cheesecake Shake',    sub:'Creamy Cheesecake Shake',  img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'Our iconic signature shake — a thick, dreamy blend inspired by classic cheesecake. Rich, sweet and completely addictive.', single:'20 QAR', hl:[{i:'🍰',t:'Cheesecake inspired'},{i:'😍',t:'Must try'},{i:'⭐',t:'Signature item'},{i:'🔥',t:'Fan favourite'}] },
-      redvelvet:      { cat:'🥤 Milkshakes', name:'Red Velvet Shake',    sub:'Velvet Cake Shake',        img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'A stunning deep red velvet cake-inspired milkshake. Velvety smooth with a subtle cocoa hint and sweet cream finish.', single:'20 QAR', hl:[{i:'❤️',t:'Red velvet base'},{i:'🍰',t:'Cake inspired'},{i:'🥛',t:'Velvety smooth'},{i:'✨',t:'Signature'}] },
-      avocados:       { cat:'🥤 Milkshakes', name:'Avocado Shake',       sub:'Smooth Avocado Shake',     img:'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900',  desc:'A smooth, creamy avocado milkshake — rich in flavour and nutrients. A unique signature that keeps customers coming back.', single:'20 QAR', hl:[{i:'🥑',t:'Fresh avocado'},{i:'💚',t:'Nutrient-rich'},{i:'🥛',t:'Ultra creamy'},{i:'✨',t:'Signature item'}] },
+      afghani: { cat: '🥟 Momos', name: 'Afghani Momos', sub: 'Creamy Smoky Momos', img: 'https://images.pexels.com/photos/2347311/pexels-photo-2347311.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Rich, creamy Afghani marinade coats every momo before they are grilled to perfection. A bold, smoky flavour profile loved by regulars.', chicken: '20 QAR', veg: '20 QAR', hl: [{ i: '🧄', t: 'Creamy Afghani sauce' }, { i: '🔥', t: 'Grilled to order' }, { i: '🥣', t: 'With mint chutney' }, { i: '💛', t: 'Rich & indulgent' }] },
+      tandoori: { cat: '🥟 Momos', name: 'Tandoori Momos', sub: 'Smoky Tandoor Flavor', img: 'https://images.pexels.com/photos/4958641/pexels-photo-4958641.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Our signature momos kissed by the tandoor — smoky, charred outside, juicy and spiced inside. Served with our house-made red chutney.', chicken: '20 QAR', veg: '20 QAR', hl: [{ i: '🔥', t: 'Char-grilled tandoor' }, { i: '🌶️', t: 'Delhi spice marinade' }, { i: '🥣', t: 'With red chutney' }, { i: '⭐', t: 'Best Seller' }] },
+      steam: { cat: '🥟 Momos', name: 'Steam Momos', sub: 'Soft Juicy Momos', img: 'https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'The OG. Perfectly steamed, pillowy-soft dumplings filled with fresh ingredients. Served with our fiery red chutney.', chicken: '12 QAR', veg: '10 QAR', hl: [{ i: '🫧', t: 'Gently steamed' }, { i: '🌶️', t: 'Red chutney' }, { i: '🇮🇳', t: 'Original Delhi recipe' }, { i: '💧', t: 'Light & healthy' }] },
+      fried: { cat: '🥟 Momos', name: 'Fried Momos', sub: 'Golden Crispy Momos', img: 'https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Deep fried to golden crispy perfection with a satisfying crunch in every bite. Served hot with our signature dipping sauces.', chicken: '15 QAR', veg: '15 QAR', hl: [{ i: '🟡', t: 'Golden crispy' }, { i: '🔥', t: 'Deep fried' }, { i: '🥣', t: 'With dipping sauce' }, { i: '⚡', t: 'Super crunchy' }] },
+      cheesecorn: { cat: '🥟 Momos', name: 'Cheese Corn Momos', sub: 'Cheesy Corn Delight', img: 'https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'A unique creation filled with cheesy corn goodness. Gooey, rich, and utterly addictive — chicken only.', chicken: '18 QAR', veg: null, hl: [{ i: '🧀', t: 'Melted cheese' }, { i: '🌽', t: 'Sweet corn' }, { i: '✨', t: 'Unique to Momowala' }, { i: '🐔', t: 'Chicken only' }] },
+      bakedcheese: { cat: '🥟 Momos', name: 'Baked Cheese Momos', sub: 'Oven Melted Cheese', img: 'https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Momos baked to golden perfection and loaded with oven-melted cheese. A rich, indulgent experience unlike anything else.', chicken: '20 QAR', veg: '20 QAR', hl: [{ i: '🧀', t: 'Oven melted cheese' }, { i: '🔥', t: 'Baked not fried' }, { i: '✨', t: 'Exclusive item' }, { i: '😍', t: 'Fan favourite' }] },
+      whitesauce: { cat: '🍝 Pasta', name: 'White Sauce Pasta', sub: 'Creamy White Pasta', img: 'https://images.pexels.com/photos/1487511/pexels-photo-1487511.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Rich and velvety white béchamel sauce tossed with perfectly cooked pasta. Creamy, comforting and absolutely satisfying.', single: '23 QAR', hl: [{ i: '🧈', t: 'Creamy béchamel' }, { i: '🍝', t: 'Al dente pasta' }, { i: '🧀', t: 'Topped with cheese' }, { i: '🌿', t: 'Fresh herbs' }] },
+      redsauce: { cat: '🍝 Pasta', name: 'Red Sauce Pasta', sub: 'Tangy Tomato Pasta', img: 'https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Tangy, rich tomato sauce slow-cooked with Delhi-style spices. Bold and flavourful — a classic done right.', single: '20 QAR', hl: [{ i: '🍅', t: 'Rich tomato base' }, { i: '🌶️', t: 'Delhi spices' }, { i: '🍝', t: 'Al dente pasta' }, { i: '🌿', t: 'Fresh herbs' }] },
+      bakedpasta: { cat: '🍝 Pasta', name: 'Baked Pasta', sub: 'Cheesy Baked Pasta', img: 'https://images.pexels.com/photos/1487511/pexels-photo-1487511.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Pasta baked to bubbly, golden perfection under a thick layer of melted cheese. The ultimate comfort food indulgence.', single: '25 QAR', hl: [{ i: '🧀', t: 'Melted cheese top' }, { i: '🔥', t: 'Oven baked' }, { i: '⭐', t: 'Popular choice' }, { i: '😍', t: 'Fan favourite' }] },
+      maggicheese: { cat: '🍜 Maggi', name: 'Cheese Corn Maggi', sub: 'Cheesy Corn Maggi', img: 'https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Classic Maggi noodles loaded with sweet corn and gooey melted cheese. A quick, satisfying snack bursting with flavour.', single: '15 QAR', hl: [{ i: '🧀', t: 'Melted cheese' }, { i: '🌽', t: 'Sweet corn' }, { i: '🍜', t: 'Masala Maggi base' }, { i: '⚡', t: 'Quick & tasty' }] },
+      maggimasala: { cat: '🍜 Maggi', name: 'Masala Maggi', sub: 'Classic Masala Maggi', img: 'https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'The timeless classic — Maggi noodles cooked in our special masala blend. Simple, nostalgic and deeply satisfying.', single: '12 QAR', hl: [{ i: '🌶️', t: 'Special masala' }, { i: '🍜', t: 'Classic Maggi' }, { i: '🇮🇳', t: 'Desi style' }, { i: '💛', t: 'Comfort food' }] },
+      maggifarm: { cat: '🍜 Maggi', name: 'Farm Fresh Maggi', sub: 'Fresh Veggie Maggi', img: 'https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Maggi tossed with fresh garden vegetables for a wholesome, colourful meal. Light, nutritious and delicious.', single: '15 QAR', hl: [{ i: '🥦', t: 'Fresh veggies' }, { i: '🌿', t: 'Garden fresh' }, { i: '🍜', t: 'Masala noodles' }, { i: '💚', t: 'Wholesome' }] },
+      maggichicken: { cat: '🍜 Maggi', name: 'Chicken Maggi', sub: 'Savory Chicken Maggi', img: 'https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Tender chicken pieces cooked into spiced Maggi noodles for a hearty, protein-packed meal. A must-try for meat lovers.', single: '18 QAR', hl: [{ i: '🐔', t: 'Fresh chicken' }, { i: '🌶️', t: 'Spiced broth' }, { i: '🍜', t: 'Hearty noodles' }, { i: '⭐', t: 'Must Try' }] },
+      zinger: { cat: '🍔 Burgers', name: 'Zinger Burger', sub: 'Crispy Chicken Burger', img: 'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'A crispy, golden fried chicken fillet stacked in a toasted bun with fresh lettuce and our special zinger sauce.', single: '15 QAR', hl: [{ i: '🐔', t: 'Crispy chicken' }, { i: '🌶️', t: 'Zinger sauce' }, { i: '🥬', t: 'Fresh lettuce' }, { i: '⭐', t: 'Popular' }] },
+      momoburgr: { cat: '🍔 Burgers', name: 'Momo Burger', sub: 'Spicy Fusion Burger', img: 'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'A Delhi-Doha fusion masterpiece — momo-spiced chicken patty in a toasted bun. Unique, bold and utterly delicious.', single: '15 QAR', hl: [{ i: '🥟', t: 'Momo-spiced patty' }, { i: '🌶️', t: 'Fusion flavours' }, { i: '✨', t: 'Unique creation' }, { i: '🤤', t: 'Crowd favourite' }] },
+      cheesyburg: { cat: '🍔 Burgers', name: 'Cheesy Burger', sub: 'Loaded Cheese Burger', img: 'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Loaded with layers of melted cheese over a juicy chicken patty. For serious cheese lovers only.', single: '18 QAR', hl: [{ i: '🧀', t: 'Double cheese' }, { i: '🐔', t: 'Juicy patty' }, { i: '🔥', t: 'Grilled' }, { i: '😍', t: 'Indulgent' }] },
+      highfries: { cat: '🍔 Burgers', name: 'High & Fries Burger', sub: 'Veggie Delight Burger', img: 'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'A veggie delight burger packed with fresh ingredients and served with crispy fries on the side. Light yet satisfying.', single: '15 QAR', hl: [{ i: '🥦', t: 'Veggie patty' }, { i: '🍟', t: 'Comes with fries' }, { i: '🌿', t: 'Fresh ingredients' }, { i: '💚', t: 'Veggie friendly' }] },
+      chessy: { cat: '🍟 Fries', name: 'Chessy Fries', sub: 'Loaded Cheese Fries', img: 'https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Golden crispy fries smothered in a generous pour of rich, gooey melted cheese. The ultimate snack for cheese lovers.', single: '15 QAR', hl: [{ i: '🧀', t: 'Loaded cheese' }, { i: '🟡', t: 'Golden crispy' }, { i: '⭐', t: 'Best Seller' }, { i: '🤤', t: 'Irresistible' }] },
+      salted: { cat: '🍟 Fries', name: 'Salted Fries', sub: 'Classic Salted Fries', img: 'https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Classic, perfectly salted golden fries. Simple, crispy and absolutely delicious. The go-to side for everything.', single: '8 QAR', hl: [{ i: '🟡', t: 'Golden crispy' }, { i: '🧂', t: 'Perfectly salted' }, { i: '💰', t: 'Great value' }, { i: '🍟', t: 'Classic cut' }] },
+      chicfries: { cat: '🍟 Fries', name: 'Chicken Fries', sub: 'Chicken Loaded Fries', img: 'https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Crispy fries topped with tender spiced chicken pieces and our signature sauces. A full meal in a box.', single: '18 QAR', hl: [{ i: '🐔', t: 'Tender chicken' }, { i: '🟡', t: 'Crispy fries' }, { i: '🌶️', t: 'Spiced sauces' }, { i: '😋', t: 'Hearty serving' }] },
+      periperi: { cat: '🍟 Fries', name: 'Peri Peri Fries', sub: 'Spicy Peri Fries', img: 'https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Golden fries dusted with fiery peri peri spice seasoning. Bold, spicy and seriously addictive.', single: '12 QAR', hl: [{ i: '🌶️', t: 'Peri peri spice' }, { i: '🔥', t: 'Fiery hot' }, { i: '🟡', t: 'Crispy fries' }, { i: '⚡', t: 'Addictive' }] },
+      degree: { cat: '🥪 Sandwich', name: 'Degree Sandwich', sub: 'Grilled Beef Sandwich', img: 'https://images.pexels.com/photos/1647163/pexels-photo-1647163.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'A satisfying grilled beef sandwich pressed to golden perfection with fresh toppings and our special sauce.', single: '10 QAR', hl: [{ i: '🥩', t: 'Grilled beef' }, { i: '🔥', t: 'Pressed & grilled' }, { i: '💰', t: 'Great value' }, { i: '🥪', t: 'Classic style' }] },
+      sandcheese: { cat: '🥪 Sandwich', name: 'Cheese Corn Sandwich', sub: 'Cheesy Corn Sandwich', img: 'https://images.pexels.com/photos/1647163/pexels-photo-1647163.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Sweet corn and melted cheese packed inside a toasted sandwich. A comforting, gooey, cheesy delight.', single: '15 QAR', hl: [{ i: '🧀', t: 'Melted cheese' }, { i: '🌽', t: 'Sweet corn' }, { i: '🔥', t: 'Toasted bread' }, { i: '⭐', t: 'Popular' }] },
+      sandveg: { cat: '🥪 Sandwich', name: 'Vegetable Sandwich', sub: 'Fresh Veggie Sandwich', img: 'https://images.pexels.com/photos/1647163/pexels-photo-1647163.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Loaded with fresh, crunchy vegetables and grilled to perfection. Light, healthy and incredibly tasty.', single: '15 QAR', hl: [{ i: '🥦', t: 'Fresh veggies' }, { i: '🌿', t: 'Garden fresh' }, { i: '🔥', t: 'Grilled' }, { i: '💚', t: 'Healthy choice' }] },
+      sandchilli: { cat: '🥪 Sandwich', name: 'Chilli Sandwich', sub: 'Spicy Chili Sandwich', img: 'https://images.pexels.com/photos/1647163/pexels-photo-1647163.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Packed with spicy chilli filling and bold flavours. For those who like their food with a serious kick.', single: '15 QAR', hl: [{ i: '🌶️', t: 'Spicy chilli' }, { i: '🔥', t: 'Bold flavours' }, { i: '⚡', t: 'Hot & fiery' }, { i: '😤', t: 'For spice lovers' }] },
+      lassiregular: { cat: '🥛 Lassi', name: 'Regular Lassi', sub: 'Classic Yogurt Lassi', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Classic creamy yogurt lassi — chilled, refreshing and perfectly balanced. The ultimate Indian cooler.', single: '10 QAR', hl: [{ i: '🥛', t: 'Fresh yogurt' }, { i: '🧊', t: 'Ice cold' }, { i: '🇮🇳', t: 'Indian classic' }, { i: '💰', t: 'Great value' }] },
+      lassimango: { cat: '🥛 Lassi', name: 'Mango Lassi', sub: 'Sweet Mango Lassi', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Luscious mango pulp blended with creamy yogurt for a thick, sweet and tropical treat.', single: '15 QAR', hl: [{ i: '🥭', t: 'Real mango pulp' }, { i: '🥛', t: 'Creamy yogurt' }, { i: '⭐', t: 'Customer favourite' }, { i: '🌞', t: 'Tropical vibes' }] },
+      lassistrawberry: { cat: '🥛 Lassi', name: 'Strawberry Lassi', sub: 'Berry Sweet Lassi', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Fresh strawberry flavour swirled into chilled creamy yogurt. Sweet, tangy and absolutely refreshing.', single: '15 QAR', hl: [{ i: '🍓', t: 'Fresh strawberry' }, { i: '🥛', t: 'Creamy yogurt' }, { i: '🌸', t: 'Berry sweet' }, { i: '🧊', t: 'Ice cold' }] },
+      lassijeera: { cat: '🥛 Lassi', name: 'Jeera Lassi', sub: 'Spiced Cumin Lassi', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'A savory, spiced cumin lassi — tangy, cooling and deeply satisfying. The traditional Indian way to beat the heat.', single: '15 QAR', hl: [{ i: '🌿', t: 'Roasted jeera' }, { i: '🥛', t: 'Tangy yogurt' }, { i: '🇮🇳', t: 'Traditional desi' }, { i: '❄️', t: 'Cooling' }] },
+      mojito: { cat: '🥛 Lassi', name: 'Mojito', sub: 'Fresh Mint Mojito', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'A refreshing mint mojito bursting with citrus and freshness. Available in any flavour.', single: '12 QAR', hl: [{ i: '🍃', t: 'Fresh mint' }, { i: '🍋', t: 'Citrus twist' }, { i: '⚡', t: 'Any flavour' }, { i: '🧊', t: 'Ice cold' }] },
+      watermelon: { cat: '🍹 Juice', name: 'Watermelon Juice', sub: 'Fresh Watermelon Juice', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Pure, freshly pressed watermelon juice. Sweet, hydrating and perfectly chilled — summer in a glass.', single: '12 QAR', hl: [{ i: '🍉', t: 'Fresh watermelon' }, { i: '💧', t: 'Hydrating' }, { i: '🧊', t: 'Ice cold' }, { i: '🌞', t: 'Refreshing' }] },
+      strawberryjuice: { cat: '🍹 Juice', name: 'Strawberry Juice', sub: 'Fresh Strawberry Juice', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Freshly blended strawberry juice — vibrant, tangy and naturally sweet.', single: '12 QAR', hl: [{ i: '🍓', t: 'Fresh strawberries' }, { i: '🌸', t: 'Naturally sweet' }, { i: '💚', t: 'Vitamins' }, { i: '🧊', t: 'Ice cold' }] },
+      bananajuice: { cat: '🍹 Juice', name: 'Banana Juice', sub: 'Creamy Banana Juice', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Thick, creamy banana juice packed with natural sweetness and energy.', single: '12 QAR', hl: [{ i: '🍌', t: 'Fresh banana' }, { i: '🥛', t: 'Creamy blend' }, { i: '⚡', t: 'Energy boost' }, { i: '💛', t: 'Naturally sweet' }] },
+      mangojuice: { cat: '🍹 Juice', name: 'Mango Juice', sub: 'Sweet Mango Juice', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Thick, tropical mango juice made from sweet ripe mangoes. Bold, fruity and impossible to resist.', single: '12 QAR', hl: [{ i: '🥭', t: 'Ripe mangoes' }, { i: '🌞', t: 'Tropical' }, { i: '⭐', t: 'Popular' }, { i: '🔥', t: 'Sweet & bold' }] },
+      avocadojuice: { cat: '🍹 Juice', name: 'Avocado Juice', sub: 'Creamy Avocado Juice', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Smooth and creamy avocado blended into a rich, nourishing juice. Healthy, filling and uniquely delicious.', single: '15 QAR', hl: [{ i: '🥑', t: 'Fresh avocado' }, { i: '💚', t: 'Nutrient-rich' }, { i: '🥛', t: 'Creamy blend' }, { i: '✨', t: 'Unique choice' }] },
+      lemonmint: { cat: '🍹 Juice', name: 'Lemon Mint', sub: 'Refreshing Mint Lemon', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Zesty lemon juice infused with fresh mint leaves. Light, tangy and incredibly refreshing.', single: '10 QAR', hl: [{ i: '🍋', t: 'Fresh lemon' }, { i: '🍃', t: 'Mint leaves' }, { i: '💰', t: 'Great value' }, { i: '❄️', t: 'Super refreshing' }] },
+      cocktail: { cat: '🍹 Juice', name: 'Cocktail Juice', sub: 'Mixed Fruit Juice', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'A vibrant medley of mixed fruits blended together for a fruity, colourful and totally unique experience.', single: '15 QAR', hl: [{ i: '🍹', t: 'Mixed fruits' }, { i: '🌈', t: 'Colourful blend' }, { i: '🎉', t: 'Fun & fruity' }, { i: '✨', t: 'Seasonal mix' }] },
+      chocolate: { cat: '🥤 Milkshakes', name: 'Chocolate Shake', sub: 'Rich Chocolate Shake', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'A thick, rich chocolate milkshake made with real cocoa. Deep, indulgent and utterly satisfying.', single: '15 QAR', hl: [{ i: '🍫', t: 'Real cocoa' }, { i: '🥛', t: 'Creamy milk' }, { i: '😍', t: 'Indulgent' }, { i: '🧊', t: 'Ice cold' }] },
+      banana: { cat: '🥤 Milkshakes', name: 'Banana Shake', sub: 'Creamy Banana Shake', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Thick and creamy banana milkshake blended with chilled milk. Naturally sweet, filling and delicious.', single: '15 QAR', hl: [{ i: '🍌', t: 'Fresh banana' }, { i: '🥛', t: 'Creamy milk' }, { i: '⚡', t: 'Energy packed' }, { i: '💛', t: 'Naturally sweet' }] },
+      strawberrys: { cat: '🥤 Milkshakes', name: 'Strawberry Shake', sub: 'Sweet Strawberry Shake', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'A gorgeous pink strawberry milkshake bursting with fresh berry flavour. Sweet, tangy and beautiful.', single: '15 QAR', hl: [{ i: '🍓', t: 'Fresh strawberry' }, { i: '🌸', t: 'Berry flavour' }, { i: '🥛', t: 'Creamy milk' }, { i: '💗', t: 'Pretty in pink' }] },
+      mangos: { cat: '🥤 Milkshakes', name: 'Mango Shake', sub: 'Tropical Mango Shake', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Thick tropical mango shake bursting with ripe mango goodness. Bold, fruity and impossible to put down.', single: '18 QAR', hl: [{ i: '🥭', t: 'Ripe mango' }, { i: '🌞', t: 'Tropical vibes' }, { i: '🥛', t: 'Thick & creamy' }, { i: '⭐', t: 'Popular' }] },
+      cheesecakes: { cat: '🥤 Milkshakes', name: 'Cheesecake Shake', sub: 'Creamy Cheesecake Shake', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'Our iconic signature shake — a thick, dreamy blend inspired by classic cheesecake. Rich, sweet and completely addictive.', single: '20 QAR', hl: [{ i: '🍰', t: 'Cheesecake inspired' }, { i: '😍', t: 'Must try' }, { i: '⭐', t: 'Signature item' }, { i: '🔥', t: 'Fan favourite' }] },
+      redvelvet: { cat: '🥤 Milkshakes', name: 'Red Velvet Shake', sub: 'Velvet Cake Shake', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'A stunning deep red velvet cake-inspired milkshake. Velvety smooth with a subtle cocoa hint and sweet cream finish.', single: '20 QAR', hl: [{ i: '❤️', t: 'Red velvet base' }, { i: '🍰', t: 'Cake inspired' }, { i: '🥛', t: 'Velvety smooth' }, { i: '✨', t: 'Signature' }] },
+      avocados: { cat: '🥤 Milkshakes', name: 'Avocado Shake', sub: 'Smooth Avocado Shake', img: 'https://images.pexels.com/photos/1187317/pexels-photo-1187317.jpeg?auto=compress&cs=tinysrgb&w=900', desc: 'A smooth, creamy avocado milkshake — rich in flavour and nutrients. A unique signature that keeps customers coming back.', single: '20 QAR', hl: [{ i: '🥑', t: 'Fresh avocado' }, { i: '💚', t: 'Nutrient-rich' }, { i: '🥛', t: 'Ultra creamy' }, { i: '✨', t: 'Signature item' }] },
     };
 
     function openMenuModal(key) {
@@ -1662,4 +2623,5 @@
     });
   </script>
 </body>
+
 </html>
