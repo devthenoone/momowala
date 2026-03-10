@@ -14,7 +14,7 @@
     /* ═══════════════════════════════════════
     BASE / RESET
     ═══════════════════════════════════════ */
-    
+
 
     /* ═══════════════════════════════════════
     MENU SECTION
@@ -1294,10 +1294,12 @@
       <div class="ticker-inner">
         <div class="ticker-item">Steam Momos <span>✦</span> Tandoori Momos <span>✦</span> Afghani Momos <span>✦</span>
           Kurkure Momos <span>✦</span> Cold Coffee <span>✦</span> Peach Ice Tea <span>✦</span> Cheesecake Shake
-          <span>✦</span> Delhi Fries <span>✦</span></div>
+          <span>✦</span> Delhi Fries <span>✦</span>
+        </div>
         <div class="ticker-item">Steam Momos <span>✦</span> Tandoori Momos <span>✦</span> Afghani Momos <span>✦</span>
           Kurkure Momos <span>✦</span> Cold Coffee <span>✦</span> Peach Ice Tea <span>✦</span> Cheesecake Shake
-          <span>✦</span> Delhi Fries <span>✦</span></div>
+          <span>✦</span> Delhi Fries <span>✦</span>
+        </div>
       </div>
     </div>
 
@@ -2425,7 +2427,7 @@
           <button class="mm-btn-order" onclick="window.location.href='tel:77705150'">
             📞 Call to Order
           </button>
-          <a class="mm-btn-wa" href="https://wa.me/97477705150" target="_blank">
+          <a class="mm-btn-wa" id="mmWhatsappBtn" href="https://wa.me/97477705150" target="_blank">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
               <path
                 d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
@@ -2562,28 +2564,26 @@
     };
 
     function openMenuModal(key) {
-  const d = menuData[key];
-  if (!d) return;
+      const d = menuData[key];
+      if (!d) return;
 
-  document.getElementById('mmImg').src = d.img;
-  document.getElementById('mmImg').alt = d.name;
-  document.getElementById('mmTag').textContent = d.cat;
-  document.getElementById('mmName').innerHTML = d.name;
-  document.getElementById('mmDesc').textContent = d.desc;
+      document.getElementById('mmImg').src = d.img;
+      document.getElementById('mmImg').alt = d.name;
+      document.getElementById('mmTag').textContent = d.cat;
+      document.getElementById('mmName').innerHTML = d.name;
+      document.getElementById('mmDesc').textContent = d.desc;
 
-  const priceEl = document.getElementById('mmPrice');
-  const badge = document.getElementById('mmBadge');
-  const vw = document.getElementById('mmVariants');
+      const priceEl = document.getElementById('mmPrice');
+      const badge = document.getElementById('mmBadge');
+      const vw = document.getElementById('mmVariants');
 
-  // ✅ Check if category is Momos
-  const isMomo = d.cat && d.cat.includes('Momos');
+      // ✅ Check if category is Momos
+      const isMomo = d.cat && d.cat.includes('Momos');
 
-  if (isMomo) {
-
-    if (d.chicken && d.veg) {
-      priceEl.textContent = d.chicken + ' / ' + d.veg;
-
-      badge.innerHTML = `
+      if (isMomo) {
+        if (d.chicken && d.veg) {
+          priceEl.textContent = d.chicken + ' / ' + d.veg;
+          badge.innerHTML = `
         <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
           <div class="mm-nonveg-badge">
             <div class="mm-nonveg-dot"></div>Non-Veg
@@ -2592,52 +2592,86 @@
             <div class="mm-veg-dot"></div>Veg Available
           </div>
         </div>`;
-
-      vw.innerHTML = `
+          vw.innerHTML = `
         <div class="mm-variant sel" onclick="selectVariant(this)">
           <div class="mm-variant-icon">🐔</div>
           <div class="mm-variant-name">Chicken</div>
           <div class="mm-variant-price">${d.chicken}</div>
         </div>
-
         <div class="mm-variant" onclick="selectVariant(this)">
           <div class="mm-variant-icon">🥦</div>
           <div class="mm-variant-name">Vegetarian</div>
           <div class="mm-variant-price">${d.veg}</div>
         </div>`;
-    } 
-    else if (d.chicken && !d.veg) {
-      priceEl.textContent = d.chicken;
-
-      badge.innerHTML = `
+        } else if (d.chicken && !d.veg) {
+          priceEl.textContent = d.chicken;
+          badge.innerHTML = `
         <div class="mm-nonveg-badge">
           <div class="mm-nonveg-dot"></div>Chicken Only
         </div>`;
-
-      vw.innerHTML = `
+          vw.innerHTML = `
         <div class="mm-variant sel">
           <div class="mm-variant-icon">🐔</div>
           <div class="mm-variant-name">Chicken Only</div>
           <div class="mm-variant-price">${d.chicken}</div>
         </div>`;
+        }
+      } else {
+        // ❌ For non-momo items do NOT show veg/nonveg badges
+        priceEl.textContent = d.single || '';
+        badge.innerHTML = '';
+        vw.innerHTML = '';
+      }
+
+      document.getElementById('mmHighlights').innerHTML = (d.hl || []).map(h =>
+        `<div class="mm-hl"><span>${h.i}</span>${h.t}</div>`
+      ).join('');
+
+      document.getElementById('mmFullMenu').innerHTML = '';
+      document.getElementById('momoModal').scrollTop = 0;
+
+      // ✅ Build WhatsApp message
+      let waMsg = '';
+      if (isMomo) {
+        if (d.chicken && d.veg) {
+          waMsg = `🥟 *Momowala Order Enquiry*\n\n*Item:* ${d.name}\n*Category:* ${d.cat}\n*Variant:* 🐔 Chicken\n*Price:* ${d.chicken}\n\nI'd like to order this. Please confirm! 🙏`;
+        } else if (d.chicken) {
+          waMsg = `🥟 *Momowala Order Enquiry*\n\n*Item:* ${d.name}\n*Category:* ${d.cat}\n*Variant:* 🐔 Chicken Only\n*Price:* ${d.chicken}\n\nI'd like to order this. Please confirm! 🙏`;
+        }
+      } else {
+        waMsg = `🍽️ *Momowala Order Enquiry*\n\n*Item:* ${d.name}\n*Category:* ${d.cat}\n*Price:* ${d.single}\n\nI'd like to order this. Please confirm! 🙏`;
+      }
+
+      document.getElementById('mmWhatsappBtn').href = `https://wa.me/97477705150?text=${encodeURIComponent(waMsg)}`;
+
+      document.getElementById('momoModalOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
     }
 
-  } else {
-    // ❌ For non-momo items do NOT show veg/nonveg badges
-    priceEl.textContent = d.single || '';
-    badge.innerHTML = '';
-    vw.innerHTML = '';
-  }
+    function selectVariant(el) {
+      el.closest('.mm-variants').querySelectorAll('.mm-variant').forEach(v => v.classList.remove('sel'));
+      el.classList.add('sel');
 
-  document.getElementById('mmHighlights').innerHTML = (d.hl || []).map(h =>
-    `<div class="mm-hl"><span>${h.i}</span>${h.t}</div>`
-  ).join('');
+      // ✅ Update WhatsApp link when variant is switched
+      const variantName = el.querySelector('.mm-variant-name').textContent.trim();
+      const variantPrice = el.querySelector('.mm-variant-price').textContent.trim();
+      const itemName = document.getElementById('mmName').textContent.trim();
+      const itemCat = document.getElementById('mmTag').textContent.trim();
+      const icon = variantName === 'Chicken' ? '🐔' : '🥦';
 
-  document.getElementById('mmFullMenu').innerHTML = '';
-  document.getElementById('momoModal').scrollTop = 0;
-  document.getElementById('momoModalOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
+      const waMsg = `🥟 *Momowala Order Enquiry*\n\n*Item:* ${itemName}\n*Category:* ${itemCat}\n*Variant:* ${icon} ${variantName}\n*Price:* ${variantPrice}\n\nI'd like to order this. Please confirm! 🙏`;
+
+      document.getElementById('mmWhatsappBtn').href = `https://wa.me/97477705150?text=${encodeURIComponent(waMsg)}`;
+    }
+
+    function closeMomoModal(e) {
+      if (e.target === document.getElementById('momoModalOverlay')) closeMomoModalDirect();
+    }
+
+    function closeMomoModalDirect() {
+      document.getElementById('momoModalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
 
     function selectVariant(el) {
       el.closest('.mm-variants').querySelectorAll('.mm-variant').forEach(v => v.classList.remove('sel'));
