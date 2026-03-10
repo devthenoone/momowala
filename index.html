@@ -1293,10 +1293,10 @@
     <div class="ticker">
       <div class="ticker-inner">
         <div class="ticker-item">Steam Momos <span>✦</span> Tandoori Momos <span>✦</span> Afghani Momos <span>✦</span>
-          Kurkure Momos <span>✦</span> Cold Coffee <span>✦</span> Peach Iced Tea <span>✦</span> Cheesecake Shake
+          Kurkure Momos <span>✦</span> Cold Coffee <span>✦</span> Peach Ice Tea <span>✦</span> Cheesecake Shake
           <span>✦</span> Delhi Fries <span>✦</span></div>
         <div class="ticker-item">Steam Momos <span>✦</span> Tandoori Momos <span>✦</span> Afghani Momos <span>✦</span>
-          Kurkure Momos <span>✦</span> Cold Coffee <span>✦</span> Peach Iced Tea <span>✦</span> Cheesecake Shake
+          Kurkure Momos <span>✦</span> Cold Coffee <span>✦</span> Peach Ice Tea <span>✦</span> Cheesecake Shake
           <span>✦</span> Delhi Fries <span>✦</span></div>
       </div>
     </div>
@@ -2059,7 +2059,7 @@
               <div class="tl-year">The Beginning</div>
               <div class="tl-h">The Dream Was Born in Delhi</div>
               <div class="tl-p">Growing up eating momos on Delhi's streets, the dream of bringing this taste to Qatar
-                started to take shape. Every recipe was tested, tasted and perfected over months.</div>
+                started to take shape. Every recipe was tested and perfected over months.</div>
             </div>
             <div class="tl-item">
               <div class="tl-year">Launch Day</div>
@@ -2076,7 +2076,7 @@
             <div class="tl-item">
               <div class="tl-year">Future</div>
               <div class="tl-h">Expanding the Delhi Experience</div>
-              <div class="tl-p">New space, proper seating, parking, wheelchair access, kids' chairs — we are building a
+              <div class="tl-p">New space, proper seating, parking, kids' chairs — we are building a
                 proper home for Delhi street food in Doha. Watch this space. 🥟</div>
             </div>
           </div>
@@ -2562,47 +2562,82 @@
     };
 
     function openMenuModal(key) {
-      const d = menuData[key];
-      if (!d) return;
-      document.getElementById('mmImg').src = d.img;
-      document.getElementById('mmImg').alt = d.name;
-      document.getElementById('mmTag').textContent = d.cat;
-      document.getElementById('mmName').innerHTML = d.name;
-      document.getElementById('mmDesc').textContent = d.desc;
-      const priceEl = document.getElementById('mmPrice');
-      const badge = document.getElementById('mmBadge');
-      if (d.chicken && d.veg) {
-        priceEl.textContent = d.chicken + ' / ' + d.veg;
-        badge.innerHTML = `<div style="display:flex;gap:.4rem;flex-wrap:wrap;"><div class="mm-nonveg-badge"><div class="mm-nonveg-dot"></div>Non-Veg</div><div class="mm-veg-badge"><div class="mm-veg-dot"></div>Veg Available</div></div>`;
-      } else if (d.chicken && !d.veg) {
-        priceEl.textContent = d.chicken;
-        badge.innerHTML = `<div class="mm-nonveg-badge"><div class="mm-nonveg-dot"></div>Chicken Only</div>`;
-      } else {
-        priceEl.textContent = d.single;
-        badge.innerHTML = `<div class="mm-veg-badge"><div class="mm-veg-dot"></div>Vegetarian</div>`;
-      }
-      document.getElementById('mmHighlights').innerHTML = (d.hl || []).map(h =>
-        `<div class="mm-hl"><span>${h.i}</span>${h.t}</div>`
-      ).join('');
-      const vw = document.getElementById('mmVariants');
-      if (d.chicken && d.veg) {
-        vw.innerHTML = `
-          <div class="mm-variant sel" onclick="selectVariant(this)">
-            <div class="mm-variant-icon">🐔</div><div class="mm-variant-name">Chicken</div><div class="mm-variant-price">${d.chicken}</div>
+  const d = menuData[key];
+  if (!d) return;
+
+  document.getElementById('mmImg').src = d.img;
+  document.getElementById('mmImg').alt = d.name;
+  document.getElementById('mmTag').textContent = d.cat;
+  document.getElementById('mmName').innerHTML = d.name;
+  document.getElementById('mmDesc').textContent = d.desc;
+
+  const priceEl = document.getElementById('mmPrice');
+  const badge = document.getElementById('mmBadge');
+  const vw = document.getElementById('mmVariants');
+
+  // ✅ Check if category is Momos
+  const isMomo = d.cat && d.cat.includes('Momos');
+
+  if (isMomo) {
+
+    if (d.chicken && d.veg) {
+      priceEl.textContent = d.chicken + ' / ' + d.veg;
+
+      badge.innerHTML = `
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+          <div class="mm-nonveg-badge">
+            <div class="mm-nonveg-dot"></div>Non-Veg
           </div>
-          <div class="mm-variant" onclick="selectVariant(this)">
-            <div class="mm-variant-icon">🥦</div><div class="mm-variant-name">Vegetarian</div><div class="mm-variant-price">${d.veg}</div>
-          </div>`;
-      } else if (d.chicken && !d.veg) {
-        vw.innerHTML = `<div class="mm-variant sel"><div class="mm-variant-icon">🐔</div><div class="mm-variant-name">Chicken Only</div><div class="mm-variant-price">${d.chicken}</div></div>`;
-      } else {
-        vw.innerHTML = '';
-      }
-      document.getElementById('mmFullMenu').innerHTML = '';
-      document.getElementById('momoModal').scrollTop = 0;
-      document.getElementById('momoModalOverlay').classList.add('open');
-      document.body.style.overflow = 'hidden';
+          <div class="mm-veg-badge">
+            <div class="mm-veg-dot"></div>Veg Available
+          </div>
+        </div>`;
+
+      vw.innerHTML = `
+        <div class="mm-variant sel" onclick="selectVariant(this)">
+          <div class="mm-variant-icon">🐔</div>
+          <div class="mm-variant-name">Chicken</div>
+          <div class="mm-variant-price">${d.chicken}</div>
+        </div>
+
+        <div class="mm-variant" onclick="selectVariant(this)">
+          <div class="mm-variant-icon">🥦</div>
+          <div class="mm-variant-name">Vegetarian</div>
+          <div class="mm-variant-price">${d.veg}</div>
+        </div>`;
+    } 
+    else if (d.chicken && !d.veg) {
+      priceEl.textContent = d.chicken;
+
+      badge.innerHTML = `
+        <div class="mm-nonveg-badge">
+          <div class="mm-nonveg-dot"></div>Chicken Only
+        </div>`;
+
+      vw.innerHTML = `
+        <div class="mm-variant sel">
+          <div class="mm-variant-icon">🐔</div>
+          <div class="mm-variant-name">Chicken Only</div>
+          <div class="mm-variant-price">${d.chicken}</div>
+        </div>`;
     }
+
+  } else {
+    // ❌ For non-momo items do NOT show veg/nonveg badges
+    priceEl.textContent = d.single || '';
+    badge.innerHTML = '';
+    vw.innerHTML = '';
+  }
+
+  document.getElementById('mmHighlights').innerHTML = (d.hl || []).map(h =>
+    `<div class="mm-hl"><span>${h.i}</span>${h.t}</div>`
+  ).join('');
+
+  document.getElementById('mmFullMenu').innerHTML = '';
+  document.getElementById('momoModal').scrollTop = 0;
+  document.getElementById('momoModalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
 
     function selectVariant(el) {
       el.closest('.mm-variants').querySelectorAll('.mm-variant').forEach(v => v.classList.remove('sel'));
